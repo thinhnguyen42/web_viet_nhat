@@ -106,11 +106,13 @@ export default function ProgramsPage() {
                       </div>
 
                       <h3 className="font-heading font-bold text-xl text-neutral-900 mb-2 leading-snug">
-                        {locale === "vi" ? program.title : program.titleEn}
+                        {locale === "ja" ? (program.titleJa || program.titleEn) : locale === "vi" ? program.title : program.titleEn}
                       </h3>
 
                       <p className="text-neutral-600 text-sm mb-4 line-clamp-2 leading-relaxed">
-                        {locale === "vi"
+                        {locale === "ja"
+                          ? (program.descriptionJa || program.descriptionEn)
+                          : locale === "vi"
                           ? program.description
                           : program.descriptionEn}
                       </p>

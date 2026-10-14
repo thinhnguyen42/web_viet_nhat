@@ -16,7 +16,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("locale") as Locale;
-      if (saved === "vi" || saved === "en") return saved;
+      if (saved === "vi" || saved === "en" || saved === "ja") return saved;
     }
     return "vi";
   });
@@ -29,8 +29,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   const toggleLocale = () => {
-    const nextLocale = locale === "vi" ? "en" : "vi";
-    setLocale(nextLocale);
+    const cycle: Record<Locale, Locale> = { vi: "ja", ja: "en", en: "vi" };
+    setLocale(cycle[locale] || "vi");
   };
 
   return (

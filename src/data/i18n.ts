@@ -1,4 +1,4 @@
-export type Locale = "vi" | "en";
+export type Locale = "vi" | "en" | "ja";
 
 export interface TranslationSchema {
   nav: {
@@ -261,6 +261,93 @@ export const translations: Record<Locale, TranslationSchema> = {
       programs: "Exchange Programs",
       partners: "Partner Universities in Japan",
       years: "Years of Cooperation",
+    },
+  },
+  ja: {
+    nav: {
+      home: "ホーム",
+      about: "センター紹介",
+      programs: "交換留学プログラム",
+      news: "学術ニュース",
+      faculty: "専門家・教員陣",
+      admissions: "留学申請・出願",
+      contact: "お問い合わせ",
+    },
+    hero: {
+      title: "日越学術協力センター",
+      subtitle: "ベトナムと日本の学術研究・留学生交流をつなぐ架け橋",
+      cta1: "交換留学プログラムを見る",
+      cta2: "留学相談を申し込む",
+    },
+    sections: {
+      features: "注目の交換留学＆奨学金",
+      latestNews: "最新の学術ニュース・お知らせ",
+      stats: "交流の実績",
+      partners: "日本の提携大学",
+      cta: "日本への交換留学を始めませんか？",
+      ctaSub: "オンラインフォームよりJASSO奨学金や交換留学選考のご相談を受け付けています",
+      ctaButton: "今すぐ相談・出願する",
+    },
+    about: {
+      title: "センターについて",
+      mission: "使命（ミッション）",
+      vision: "ビジョン",
+      history: "協力の歴史",
+    },
+    programs: {
+      title: "交換留学・日本留学プログラム",
+      all: "すべて",
+      korean: "東京大学・京都大学",
+      japanese: "アカデミック日本語",
+      exchange: "学生交換",
+      duration: "期間",
+      viewDetails: "詳細を見る",
+    },
+    news: {
+      title: "学術ニュース＆イベント",
+      readMore: "続きを読む",
+      viewAll: "すべての記事を見る",
+    },
+    faculty: {
+      title: "顧問評議会および日越教員陣",
+    },
+    admissions: {
+      title: "交換留学生募集・出願案内",
+      timeline: "申請プロセス",
+      form: "オンライン出願フォーム",
+      fullName: "学生氏名",
+      email: "メールアドレス",
+      phone: "電話番号",
+      program: "希望プログラム / 奨学金",
+      message: "日本語レベル・GPA・志望動機",
+      submit: "出願・申請を送信",
+    },
+    contact: {
+      title: "お問い合わせ・留学相談",
+      formTitle: "メッセージを送信",
+      name: "氏名",
+      email: "メールアドレス",
+      subject: "件名",
+      message: "お問い合わせ内容",
+      send: "送信する",
+      info: "国際学術交流オフィス",
+      address: "所在地",
+      phone: "電話番号",
+      officeHours: "受付時間",
+      officeHoursValue: "月曜日〜金曜日: 8:00 - 17:00",
+    },
+    footer: {
+      description: "ベトナムと日本の学術協力および留学生交流情報ポータルサイト。",
+      quickLinks: "クイックリンク",
+      programs: "プログラム",
+      contactInfo: "連絡先",
+      copyright: "© 2026 日越学術協力センター",
+    },
+    stats: {
+      students: "渡日留学生数",
+      programs: "交換プログラム数",
+      partners: "日本提携大学数",
+      years: "協力継続年数",
     },
   },
 };

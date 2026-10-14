@@ -45,19 +45,19 @@ export default function NewsDetailClient({ article }: { article: NewsArticle }) 
         </div>
 
         <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold text-neutral-900 mb-8 leading-tight tracking-tight">
-          {locale === "vi" ? article.title : article.titleEn}
+          {locale === "ja" ? (article.titleJa || article.titleEn) : locale === "vi" ? article.title : article.titleEn}
         </h1>
 
         <div className="aspect-[2/1] rounded-3xl bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 shadow-xl flex flex-col items-center justify-center p-8 text-white mb-10 text-center border border-primary-400/20">
           <span className="text-5xl mb-3">📰</span>
           <p className="text-xl font-heading font-bold max-w-lg">
-            {locale === "vi" ? article.title : article.titleEn}
+            {locale === "ja" ? (article.titleJa || article.titleEn) : locale === "vi" ? article.title : article.titleEn}
           </p>
         </div>
 
         <div className="prose prose-neutral prose-lg max-w-none text-neutral-800 leading-relaxed space-y-6">
           <p className="text-xl font-medium text-neutral-700 leading-relaxed border-l-4 border-accent-400 pl-4 py-1 italic bg-neutral-50 rounded-r-xl">
-            {locale === "vi" ? article.excerpt : article.excerptEn}
+            {locale === "ja" ? (article.excerptJa || article.excerptEn) : locale === "vi" ? article.excerpt : article.excerptEn}
           </p>
 
           <p>

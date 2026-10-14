@@ -47,10 +47,10 @@ export default function ProgramDetailClient({ program }: { program: Program }) {
 
               <div>
                 <h1 className="font-heading text-3xl sm:text-4xl font-extrabold text-white mb-3 tracking-tight">
-                  {locale === "vi" ? program.title : program.titleEn}
+                  {locale === "ja" ? (program.titleJa || program.titleEn) : locale === "vi" ? program.title : program.titleEn}
                 </h1>
                 <p className="text-primary-100 text-sm sm:text-base max-w-2xl leading-relaxed">
-                  {locale === "vi" ? program.description : program.descriptionEn}
+                  {locale === "ja" ? (program.descriptionJa || program.descriptionEn) : locale === "vi" ? program.description : program.descriptionEn}
                 </p>
               </div>
             </div>

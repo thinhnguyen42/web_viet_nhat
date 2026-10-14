@@ -13,7 +13,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { locale, toggleLocale, t } = useLanguage();
+  const { locale, setLocale, toggleLocale, t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -48,14 +48,14 @@ export default function Header() {
             className="flex items-center gap-3 group"
           >
             <div className="w-10 h-10 rounded-lg bg-primary-500 flex items-center justify-center text-white font-heading font-bold text-lg group-hover:bg-primary-600 transition-colors">
-              VHN
+              VNJ
             </div>
             <div className="hidden sm:block">
               <p className="font-heading font-bold text-sm leading-tight text-primary-900">
-                {locale === "vi" ? "Trung Tâm" : "Center"}
+                {locale === "vi" ? "Trung Tâm" : locale === "ja" ? "センター" : "Center"}
               </p>
               <p className="font-heading font-semibold text-xs text-primary-600">
-                {locale === "vi" ? "Việt Hàn Nhật" : "Vietnam-Korea-Japan"}
+                {locale === "vi" ? "Học Thuật Việt - Nhật" : locale === "ja" ? "日越学術協力" : "Vietnam - Japan Academic"}
               </p>
             </div>
           </Link>
@@ -82,16 +82,43 @@ export default function Header() {
             })}
           </div>
 
-          {/* Language Toggle + Mobile Menu Button */}
+          {/* Language Selector + Mobile Menu Button */}
           <div className="flex items-center gap-2">
-            <button
-              onClick={toggleLocale}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-neutral-600 hover:bg-neutral-100 transition-colors cursor-pointer"
-              aria-label="Toggle language"
-            >
-              <Globe className="w-4 h-4 text-primary-500" />
-              <span>{locale === "vi" ? "EN" : "VI"}</span>
-            </button>
+            <div className="flex items-center bg-neutral-100/90 p-0.5 rounded-xl border border-neutral-200/80 text-xs font-semibold">
+              <button
+                onClick={() => setLocale("vi")}
+                className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                  locale === "vi"
+                    ? "bg-white text-primary-700 shadow-sm"
+                    : "text-neutral-500 hover:text-neutral-900"
+                }`}
+                title="Tiếng Việt"
+              >
+                🇻🇳 VI
+              </button>
+              <button
+                onClick={() => setLocale("ja")}
+                className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                  locale === "ja"
+                    ? "bg-white text-primary-700 shadow-sm"
+                    : "text-neutral-500 hover:text-neutral-900"
+                }`}
+                title="日本語"
+              >
+                🇯🇵 日
+              </button>
+              <button
+                onClick={() => setLocale("en")}
+                className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                  locale === "en"
+                    ? "bg-white text-primary-700 shadow-sm"
+                    : "text-neutral-500 hover:text-neutral-900"
+                }`}
+                title="English"
+              >
+                🇬🇧 EN
+              </button>
+            </div>
 
             <button
               onClick={() => setIsMobileMenuOpen((prev) => !prev)}

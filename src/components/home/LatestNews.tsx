@@ -44,10 +44,10 @@ export default function LatestNews() {
                       </span>
                     </div>
                     <h3 className="font-heading font-bold text-lg text-neutral-900 mb-2 line-clamp-2 leading-snug">
-                      {locale === "vi" ? article.title : article.titleEn}
+                      {locale === "ja" ? (article.titleJa || article.titleEn) : locale === "vi" ? article.title : article.titleEn}
                     </h3>
                     <p className="text-neutral-600 text-sm line-clamp-2 leading-relaxed">
-                      {locale === "vi" ? article.excerpt : article.excerptEn}
+                      {locale === "ja" ? (article.excerptJa || article.excerptEn) : locale === "vi" ? article.excerpt : article.excerptEn}
                     </p>
                   </div>
                 </div>

@@ -59,11 +59,11 @@ export default function NewsPage() {
                     </div>
 
                     <h3 className="font-heading font-bold text-xl text-neutral-900 mb-3 line-clamp-2 leading-snug">
-                      {locale === "vi" ? article.title : article.titleEn}
+                      {locale === "ja" ? (article.titleJa || article.titleEn) : locale === "vi" ? article.title : article.titleEn}
                     </h3>
 
                     <p className="text-neutral-600 text-sm line-clamp-3 mb-4 leading-relaxed">
-                      {locale === "vi" ? article.excerpt : article.excerptEn}
+                      {locale === "ja" ? (article.excerptJa || article.excerptEn) : locale === "vi" ? article.excerpt : article.excerptEn}
                     </p>
                   </div>
                 </div>
