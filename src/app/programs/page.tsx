@@ -13,9 +13,9 @@ import { useLanguage } from "@/components/providers/LanguageProvider";
 
 const filters = [
   { key: "all", labelKey: "all" as const },
-  { key: "korean", labelKey: "korean" as const },
-  { key: "japanese", labelKey: "japanese" as const },
   { key: "exchange", labelKey: "exchange" as const },
+  { key: "scholarship", labelKey: "scholarship" as const },
+  { key: "japanese", labelKey: "japanese" as const },
 ];
 
 export default function ProgramsPage() {
@@ -93,11 +93,23 @@ export default function ProgramsPage() {
                               : "default"
                           }
                         >
-                          {program.category === "scholarship"
-                            ? "Học bổng"
+                          {locale === "ja"
+                            ? program.category === "scholarship"
+                              ? "奨学金"
+                              : program.category === "japanese"
+                              ? "日本語"
+                              : "交換留学"
+                            : locale === "vi"
+                            ? program.category === "scholarship"
+                              ? "Học bổng"
+                              : program.category === "japanese"
+                              ? "Tiếng Nhật"
+                              : "Trao đổi"
+                            : program.category === "scholarship"
+                            ? "Scholarship"
                             : program.category === "japanese"
-                            ? "Tiếng Nhật"
-                            : "Trao đổi"}
+                            ? "Japanese"
+                            : "Exchange"}
                         </Badge>
                         <span className="text-xs text-neutral-500 flex items-center gap-1">
                           <Clock className="w-3.5 h-3.5 text-primary-500" />

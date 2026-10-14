@@ -44,16 +44,16 @@ const timelineSteps = [
 
 const faqs = [
   {
-    q: "Học viên chưa từng học tiếng Hàn/Nhật có đăng ký được không?",
-    a: "Hoàn toàn được. Trung tâm có các lớp vỡ lòng thiết kế riêng cho người mới bắt đầu từ bảng chữ cái.",
+    q: "Sinh viên chưa có chứng chỉ tiếng Nhật JLPT có đăng ký tham gia tư vấn được không?",
+    a: "Hoàn toàn được. Trung tâm có các khóa tiếng Nhật học thuật dự bị từ sơ cấp lên N3/N2 và hỗ trợ sinh viên lập kế hoạch du học từ sớm.",
   },
   {
-    q: "Điều kiện tham gia chương trình trao đổi sinh viên là gì?",
-    a: "Sinh viên hoàn thành ít nhất 1 năm học đại học, có điểm trung bình tích lũy đạt chuẩn và năng lực ngoại ngữ tương đương TOPIK 3 hoặc JLPT N3.",
+    q: "Điều kiện tham gia chương trình trao đổi sinh viên sang Nhật Bản là gì?",
+    a: "Sinh viên hoàn thành ít nhất 1 năm học đại học, có điểm trung bình GPA từ 2.5 trở lên và năng lực ngoại ngữ JLPT N3 (hoặc IELTS 6.0 đối với chương trình giảng dạy bằng tiếng Anh tại các trường ĐH Nhật).",
   },
   {
-    q: "Trung tâm có chính sách giảm học phí cho sinh viên HCMCOU không?",
-    a: "Có. Sinh viên đang theo học tại Trường Đại học Mở TP.HCM được hưởng ưu đãi giảm 15-20% học phí tất cả các khóa học.",
+    q: "Trung tâm có chính sách hỗ trợ học bổng du học Nhật Bản không?",
+    a: "Có. Trung tâm trực tiếp hướng dẫn và đề cử sinh viên xét cấp học bổng trao đổi sinh viên JASSO (80.000 Yên/tháng) và học bổng Chính phủ MEXT của Nhật Bản.",
   },
 ];
 

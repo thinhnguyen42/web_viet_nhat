@@ -65,11 +65,11 @@ export default function NewsDetailClient({ article }: { article: NewsArticle }) 
           </p>
 
           <p>
-            Nhằm mục tiêu tạo điều kiện tốt nhất cho học viên và các bạn sinh
-            viên có nguyện vọng nghiên cứu ngôn ngữ, tham gia các kỳ thi chuẩn hóa
-            quốc tế cũng như ứng tuyển các suất học bổng toàn phần, Trung Tâm
-            Việt Hàn Nhật thường xuyên tổ chức các buổi tư vấn chuyên sâu và hỗ
-            trợ hoàn thiện hồ sơ đăng ký.
+            Nhằm mục tiêu tạo điều kiện tốt nhất cho các bạn sinh viên có nguyện
+            vọng nghiên cứu học thuật, tham gia các chương trình trao đổi và ứng
+            tuyển học bổng du học Nhật Bản, Trung Tâm Hợp Tác Học Thuật Việt - Nhật
+            thường xuyên tổ chức các buổi tư vấn chuyên sâu và hỗ trợ hoàn thiện hồ
+            sơ đăng ký.
           </p>
 
           <h2 className="text-2xl font-bold font-heading text-neutral-900 mt-8 mb-4">

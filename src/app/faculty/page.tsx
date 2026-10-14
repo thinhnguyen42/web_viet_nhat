@@ -34,11 +34,11 @@ export default function FacultyPage() {
                 </div>
 
                 <h3 className="font-heading font-bold text-xl text-neutral-900 mb-1">
-                  {locale === "vi" ? member.name : member.nameEn}
+                  {locale === "ja" ? (member.nameJa || member.nameEn) : locale === "vi" ? member.name : member.nameEn}
                 </h3>
 
                 <p className="text-primary-600 text-sm font-semibold mb-4">
-                  {locale === "vi" ? member.title : member.titleEn}
+                  {locale === "ja" ? (member.titleJa || member.titleEn) : locale === "vi" ? member.title : member.titleEn}
                 </p>
 
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-neutral-200 rounded-full text-xs text-neutral-700 font-medium mb-4">
@@ -47,7 +47,7 @@ export default function FacultyPage() {
                 </div>
 
                 <p className="text-neutral-600 text-sm leading-relaxed mb-6">
-                  {locale === "vi" ? member.bio : member.bioEn}
+                  {locale === "ja" ? (member.bioJa || member.bioEn) : locale === "vi" ? member.bio : member.bioEn}
                 </p>
               </div>
 

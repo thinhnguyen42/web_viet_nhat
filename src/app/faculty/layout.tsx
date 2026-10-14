@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Đội ngũ giảng viên",
   description:
-    "Đội ngũ giảng viên và chuyên gia tại Trung Tâm Việt Hàn Nhật - Trường Đại học Mở TP.HCM",
+    "Đội ngũ giảng viên và chuyên gia học thuật tại Trung Tâm Hợp Tác Học Thuật Việt - Nhật - Trường Đại học Mở TP.HCM",
 };
 
 export default function FacultyLayout({

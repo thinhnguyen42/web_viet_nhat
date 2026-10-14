@@ -78,7 +78,7 @@ export default function ContactPage() {
                   value={form.subject}
                   onChange={handleChange}
                   required
-                  placeholder="Cần tư vấn khóa học tiếng Hàn/Nhật..."
+                  placeholder="Cần tư vấn chương trình trao đổi du học Nhật Bản..."
                 />
                 <Textarea
                   label={t.contact.message}

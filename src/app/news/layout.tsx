@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Tin tức & Sự kiện",
   description:
-    "Tin tức, sự kiện và thông báo mới nhất từ Trung Tâm Việt Hàn Nhật - Trường Đại học Mở TP.HCM",
+    "Tin tức, sự kiện và thông báo học bổng du học mới nhất từ Trung Tâm Hợp Tác Học Thuật Việt - Nhật - Trường Đại học Mở TP.HCM",
 };
 
 export default function NewsLayout({

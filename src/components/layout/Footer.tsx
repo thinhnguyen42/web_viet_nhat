@@ -18,12 +18,12 @@ export default function Footer() {
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-lg bg-accent-400 flex items-center justify-center text-primary-900 font-heading font-bold text-lg">
-                VHN
+                VNJ
               </div>
               <div>
                 <p className="font-heading font-bold text-sm">Trung Tâm</p>
                 <p className="font-heading font-semibold text-xs text-primary-200">
-                  Việt Hàn Nhật
+                  Học Thuật Việt - Nhật
                 </p>
               </div>
             </div>
@@ -82,7 +82,7 @@ export default function Footer() {
                   href="/programs"
                   className="text-primary-200 hover:text-white text-sm transition-colors"
                 >
-                  🇰🇷 Hàn Quốc học
+                  🎓 Học bổng JASSO & MEXT
                 </Link>
               </li>
               <li>
@@ -90,7 +90,7 @@ export default function Footer() {
                   href="/programs"
                   className="text-primary-200 hover:text-white text-sm transition-colors"
                 >
-                  🇯🇵 Nhật Bản học
+                  🇯🇵 Trao đổi ĐH Tokyo & Kyoto
                 </Link>
               </li>
               <li>
@@ -98,7 +98,7 @@ export default function Footer() {
                   href="/programs"
                   className="text-primary-200 hover:text-white text-sm transition-colors"
                 >
-                  🔄 Chương trình trao đổi
+                  📚 Tiếng Nhật học thuật N2/N1
                 </Link>
               </li>
             </ul>

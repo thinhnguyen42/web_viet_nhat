@@ -7,22 +7,30 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 
 export default function AboutPage() {
-  const { t } = useLanguage();
+  const { locale, t } = useLanguage();
 
   return (
     <section className="section-padding bg-white">
       <Container>
         <SectionHeading
           title={t.about.title}
-          subtitle="Cầu nối giáo dục, giao lưu văn hóa và phát triển nguồn nhân lực chất lượng cao giữa Việt Nam, Hàn Quốc và Nhật Bản."
+          subtitle={
+            locale === "vi"
+              ? "Cầu nối học thuật, nghiên cứu khoa học và phát triển nguồn nhân lực chất lượng cao giữa Việt Nam và Nhật Bản."
+              : locale === "ja"
+              ? "ベトナムと日本の学術研究協力および高度人材育成をつなぐ公式プラットフォーム。"
+              : "Bridging academic research, higher education, and talent development between Vietnam and Japan."
+          }
         />
 
         {/* Intro */}
         <div className="max-w-3xl mx-auto mb-16 text-center">
           <p className="text-lg text-neutral-700 leading-relaxed">
-            Trung Tâm Việt Hàn Nhật là đơn vị trực thuộc Trường Đại học Mở
-            TP.HCM, có sứ mệnh đẩy mạnh hợp tác quốc tế, đào tạo ngôn ngữ và giao
-            lưu văn hóa đa phương giữa ba quốc gia.
+            {locale === "vi"
+              ? "Trung Tâm Hợp Tác Học Thuật Việt - Nhật trực thuộc Trường Đại học Mở TP.HCM có sứ mệnh đẩy mạnh nghiên cứu song phương, tổ chức các chương trình trao đổi học sinh - sinh viên sang các trường đại học hàng đầu tại Nhật Bản du học."
+              : locale === "ja"
+              ? "日越学術協力センターは、ベトナムと日本の学術共同研究を促進し、日本の協定大学への学生交換留学プログラムを強力に支援しています。"
+              : "The Vietnam - Japan Academic Center is dedicated to advancing bilateral research cooperation and facilitating student exchange programs to top universities in Japan."}
           </p>
         </div>
 
@@ -32,12 +40,22 @@ export default function AboutPage() {
             {
               icon: Target,
               title: t.about.mission,
-              text: "Xây dựng cầu nối văn hóa và giáo dục bền vững giữa Việt Nam, Hàn Quốc và Nhật Bản. Đào tạo nguồn nhân lực trẻ tài năng, am hiểu văn hóa và thành thạo ngôn ngữ Đông Á.",
+              text:
+                locale === "vi"
+                  ? "Xây dựng cầu nối học thuật bền vững giữa Việt Nam và Nhật Bản. Đào tạo sinh viên xuất sắc, trang bị năng lực tiếng Nhật học thuật và khả năng nghiên cứu khoa học để du học trao đổi thành công tại Nhật Bản."
+                  : locale === "ja"
+                  ? "ベトナムと日本の強固な学術ネットワークを構築し、日本への交換留学を成功させる専門的学術日本語力と研究能力を備えた優秀な学生を育成します。"
+                  : "Build enduring academic partnerships between Vietnam and Japan, nurturing students with academic Japanese proficiency and research capabilities.",
             },
             {
               icon: Eye,
               title: t.about.vision,
-              text: "Trở thành trung tâm kiểu mẫu hàng đầu khu vực phía Nam về nghiên cứu, giao lưu văn hóa và liên kết đào tạo quốc tế với các trường đại học hàng đầu tại Hàn Quốc và Nhật Bản.",
+              text:
+                locale === "vi"
+                  ? "Trở thành trung tâm kiểu mẫu hàng đầu trong kết nối hợp tác giáo dục đại học, trao đổi học sinh - sinh viên và chuyển giao tri thức giữa các trường đại học Việt Nam và Nhật Bản."
+                  : locale === "ja"
+                  ? "ベトナムと日本の大学間学術交流、交換留学、知識移転における先導的かつ模範的な教育協力センターを目指します。"
+                  : "Become the premier center for higher education cooperation, student exchanges, and knowledge transfer between Vietnam and Japan.",
             },
           ].map((item, i) => (
             <motion.div
@@ -66,18 +84,18 @@ export default function AboutPage() {
           {[
             {
               icon: Award,
-              title: "Chứng nhận chuẩn quốc tế",
-              desc: "Giáo trình cập nhật theo khung năng lực chuẩn TOPIK và JLPT.",
+              title: locale === "vi" ? "Chứng nhận chuẩn Nhật Bản" : locale === "ja" ? "日本基準の学術認定" : "Japanese Academic Standard",
+              desc: locale === "vi" ? "Đào tạo theo khung năng lực tiếng Nhật học thuật JLPT N3 - N1 và kỹ năng nghiên cứu." : locale === "ja" ? "JLPT上位級および学術研究スキルに特化した教育カリキュラム。" : "Curriculum aligned with JLPT N3-N1 academic Japanese standards.",
             },
             {
               icon: Users,
-              title: "Giảng viên giàu kinh nghiệm",
-              desc: "100% giảng viên đạt trình độ thạc sĩ trở lên cùng chuyên gia bản xứ.",
+              title: locale === "vi" ? "Giảng viên & Giáo sư đối tác" : locale === "ja" ? "日越の教授陣・専門家" : "Distinguished Professors",
+              desc: locale === "vi" ? "100% giảng viên trình độ thạc sĩ - tiến sĩ tu nghiệp tại Nhật và các giáo sư thỉnh giảng người Nhật." : locale === "ja" ? "日本留学経験を持つ修士・博士取得者および日本の客員教授陣。" : "Faculty with degrees from Japan and visiting Japanese professors.",
             },
             {
               icon: Globe2,
-              title: "Mạng lưới đối tác rộng lớn",
-              desc: "Hợp tác chặt chẽ với các trường đại học công lập hàng đầu tại Seoul và Tokyo.",
+              title: locale === "vi" ? "Đối tác đại học hàng đầu" : locale === "ja" ? "日本のトップ協定大学" : "Top Partner Universities",
+              desc: locale === "vi" ? "Hợp tác trực tiếp với ĐH Tokyo, ĐH Kyoto, ĐH Osaka, ĐH Tohoku và học bổng JASSO." : locale === "ja" ? "東京大学、京都大学、大阪大学、東北大学およびJASSOとの強固な連携。" : "Direct partnerships with UTokyo, Kyoto, Osaka, Tohoku and JASSO.",
             },
           ].map((h, i) => (
             <div
@@ -108,16 +126,18 @@ export default function AboutPage() {
           </h3>
           <div className="text-neutral-700 leading-relaxed space-y-4 text-base">
             <p>
-              Được thành lập trong khuôn khổ chiến lược quốc tế hóa giáo dục của
-              Trường Đại học Mở TP.HCM, Trung Tâm Việt Hàn Nhật đã từng bước phát
-              triển và trở thành điểm tựa văn hóa vững chắc cho hàng nghìn sinh
-              viên và học viên mỗi năm.
+              {locale === "vi"
+                ? "Được thành lập trong khuôn khổ chiến lược quốc tế hóa giáo dục của Trường Đại học Mở TP.HCM, Trung Tâm Hợp Tác Học Thuật Việt - Nhật là cầu nối tin cậy hàng đầu cho sinh viên Việt Nam tiếp cận các chương trình trao đổi và học bổng du học Nhật Bản danh giá."
+                : locale === "ja"
+                ? "ホーチミン市オープン大学の国際化推進戦略のもとで設立された日越学術協力センターは、ベトナム人学生が日本のトップ大学への交換留学および名誉ある奨学金を獲得するための信頼できる窓口です。"
+                : "Established under the internationalization strategy of HCMCOU, the Vietnam - Japan Academic Center serves as the premier bridge for students seeking exchange programs and prestigious scholarships in Japan."}
             </p>
             <p>
-              Trung tâm liên tục mở rộng các chương trình học bổng, diễn đàn khoa
-              học, ngày hội giao lưu văn hóa và các chuyến trao đổi học thuật thực
-              tế, tạo điều kiện thuận lợi nhất để học viên tiếp cận và hội nhập
-              toàn cầu.
+              {locale === "vi"
+                ? "Trung tâm liên tục mở rộng các chương trình học bổng JASSO, học bổng MEXT, hội thảo khoa học quốc tế song phương và các chuyến thực tập học thuật tại Nhật Bản, hỗ trợ tối đa cho sinh viên hiện thực hóa ước mơ du học."
+                : locale === "ja"
+                ? "当センターでは、JASSO奨学金や国費留学生（MEXT）奨学金の支援、日越共同国際学術シンポジウム、日本での学術インターンシップを継続的に拡大しています。"
+                : "The Center actively expands JASSO scholarships, MEXT support, bilateral scientific conferences, and academic internships in Japan."}
             </p>
           </div>
         </motion.div>

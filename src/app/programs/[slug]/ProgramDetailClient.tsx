@@ -28,17 +28,27 @@ export default function ProgramDetailClient({ program }: { program: Program }) {
                       ? "scholarship"
                       : program.category === "japanese"
                       ? "japanese"
-                      : program.category === "exchange"
-                      ? "exchange"
-                      : "default"
+                      : "exchange"
                   }
                   className="bg-white/90 text-neutral-900 border-none font-semibold text-xs"
                 >
-                  {program.category === "scholarship"
-                    ? "🎓 Học bổng"
+                  {locale === "ja"
+                    ? program.category === "scholarship"
+                      ? "🎓 奨学金"
+                      : program.category === "japanese"
+                      ? "🇯🇵 日本語"
+                      : "🔄 交換留学"
+                    : locale === "vi"
+                    ? program.category === "scholarship"
+                      ? "🎓 Học bổng"
+                      : program.category === "japanese"
+                      ? "🇯🇵 Tiếng Nhật"
+                      : "🔄 Trao đổi du học"
+                    : program.category === "scholarship"
+                    ? "🎓 Scholarship"
                     : program.category === "japanese"
-                    ? "🇯🇵 Nhật Bản"
-                    : "🔄 Trao đổi quốc tế"}
+                    ? "🇯🇵 Japanese"
+                    : "🔄 Exchange"}
                 </Badge>
                 <span className="text-sm bg-white/20 backdrop-blur-md px-3 py-1 rounded-full font-medium">
                   {program.duration}

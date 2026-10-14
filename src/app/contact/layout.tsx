@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Liên hệ",
   description:
-    "Liên hệ với Trung Tâm Việt Hàn Nhật - Trường Đại học Mở TP.HCM",
+    "Liên hệ với Trung Tâm Hợp Tác Học Thuật Việt - Nhật - Trường Đại học Mở TP.HCM",
 };
 
 export default function ContactLayout({

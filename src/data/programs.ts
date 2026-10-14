@@ -3,7 +3,7 @@ export interface Program {
   title: string;
   titleEn: string;
   titleJa?: string;
-  category: "japanese" | "exchange" | "scholarship" | "korean";
+  category: "japanese" | "exchange" | "scholarship";
   description: string;
   descriptionEn: string;
   descriptionJa?: string;

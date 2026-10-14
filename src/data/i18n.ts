@@ -34,7 +34,7 @@ export interface TranslationSchema {
   programs: {
     title: string;
     all: string;
-    korean: string;
+    scholarship: string;
     japanese: string;
     exchange: string;
     duration: string;
@@ -123,9 +123,9 @@ export const translations: Record<Locale, TranslationSchema> = {
     programs: {
       title: "Chương trình trao đổi & Du học Nhật Bản",
       all: "Tất cả",
-      korean: "ĐH Tokyo & Kyoto",
-      japanese: "Tiếng Nhật học thuật",
+      scholarship: "Học bổng du học Nhật",
       exchange: "Trao đổi sinh viên",
+      japanese: "Tiếng Nhật học thuật",
       duration: "Thời lượng",
       viewDetails: "Xem chi tiết",
     },
@@ -210,9 +210,9 @@ export const translations: Record<Locale, TranslationSchema> = {
     programs: {
       title: "Exchange & Study in Japan Programs",
       all: "All",
-      korean: "UTokyo & Kyoto",
-      japanese: "Academic Japanese",
+      scholarship: "Scholarships",
       exchange: "Student Exchange",
+      japanese: "Academic Japanese",
       duration: "Duration",
       viewDetails: "View Details",
     },
@@ -297,9 +297,9 @@ export const translations: Record<Locale, TranslationSchema> = {
     programs: {
       title: "交換留学・日本留学プログラム",
       all: "すべて",
-      korean: "東京大学・京都大学",
-      japanese: "アカデミック日本語",
+      scholarship: "日本留学奨学金",
       exchange: "学生交換",
+      japanese: "アカデミック日本語",
       duration: "期間",
       viewDetails: "詳細を見る",
     },
