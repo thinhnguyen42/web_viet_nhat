@@ -1,9 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { ArrowLeft, Calendar, Tag, Share2 } from "lucide-react";
 import Container from "@/components/layout/Container";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
+import pagesJson from "@/content/pages.json";
 import type { NewsArticle } from "@/data/news";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { useSiteData } from "@/components/providers/SiteDataProvider";
@@ -11,6 +13,7 @@ import { useSiteData } from "@/components/providers/SiteDataProvider";
 export default function NewsDetailClient({ article: initialArticle }: { article: NewsArticle }) {
   const { locale, t } = useLanguage();
   const { news } = useSiteData();
+  const detailContent = pagesJson.news.detail;
 
   const article =
     news.find((n) => n.slug === initialArticle.slug) || initialArticle;
@@ -66,13 +69,12 @@ export default function NewsDetailClient({ article: initialArticle }: { article:
                 });
               } else {
                 void navigator.clipboard.writeText(window.location.href);
-                alert("Đã sao chép liên kết vào bộ nhớ tạm!");
+                alert(detailContent.copiedMessage);
               }
             }}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-neutral-600 bg-neutral-100 hover:bg-neutral-200 transition-colors cursor-pointer"
           >
-            <Share2 className="w-3.5 h-3.5" />{" "}
-            {locale === "ja" ? "共有" : locale === "vi" ? "Chia sẻ" : "Share"}
+            <Share2 className="w-3.5 h-3.5" /> {detailContent.shareLabel[locale]}
           </button>
         </div>
 
@@ -80,9 +82,15 @@ export default function NewsDetailClient({ article: initialArticle }: { article:
           {localizedTitle}
         </h1>
 
-        <div className="aspect-[2/1] rounded-3xl bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 shadow-xl flex flex-col items-center justify-center p-8 text-white mb-10 text-center border border-primary-400/20">
-          <span className="text-5xl mb-3">📰</span>
-          <p className="text-xl font-heading font-bold max-w-lg">
+        <div className="aspect-[2/1] rounded-3xl bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 shadow-xl flex flex-col items-center justify-center p-8 text-white mb-10 text-center border border-primary-400/20 relative overflow-hidden">
+          <Image
+            src={article.image}
+            alt={localizedTitle}
+            fill
+            unoptimized
+            className="object-cover opacity-25 pointer-events-none"
+          />
+          <p className="relative z-10 text-xl sm:text-2xl font-heading font-bold max-w-2xl">
             {localizedTitle}
           </p>
         </div>
@@ -97,35 +105,20 @@ export default function NewsDetailClient({ article: initialArticle }: { article:
           ))}
 
           <h2 className="text-2xl font-bold font-heading text-neutral-900 mt-8 mb-4">
-            {locale === "ja"
-              ? "お問い合わせ・留学サポート窓口"
-              : locale === "vi"
-              ? "Thông tin liên hệ & Hỗ trợ học viên"
-              : "Student Support & Contact"}
+            {detailContent.supportTitle[locale]}
           </h2>
-          <p>
-            {locale === "ja"
-              ? "プログラムや出願手続きに関するご質問は、日越学術協力センター事務局またはオンライン相談窓口までお気軽にお問い合わせください。"
-              : locale === "vi"
-              ? "Mọi thắc mắc về chương trình đào tạo hoặc quy trình nộp hồ sơ, quý phụ huynh và sinh viên vui lòng liên hệ trực tiếp qua Văn phòng Trung tâm hoặc đăng ký tư vấn trực tuyến."
-              : "For any inquiries regarding exchange programs or application procedures, please contact the Vietnam - Japan Academic Center office or submit an online consultation request."}
-          </p>
+          <p>{detailContent.supportBody[locale]}</p>
         </div>
 
         <div className="mt-12 pt-8 border-t border-neutral-200 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-sm text-neutral-500">
             <Tag className="w-4 h-4 text-primary-500" />
             <span>
-              {locale === "ja" ? "カテゴリー:" : locale === "vi" ? "Chủ đề:" : "Category:"}{" "}
-              {article.category}
+              {detailContent.topicLabel[locale]} {article.category}
             </span>
           </div>
           <Button href="/admissions" size="md">
-            {locale === "ja"
-              ? "今すぐ出願・登録する"
-              : locale === "vi"
-              ? "Đăng ký tham gia ngay"
-              : "Apply Now"}
+            {detailContent.ctaButton[locale]}
           </Button>
         </div>
       </Container>

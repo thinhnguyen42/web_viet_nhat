@@ -1,40 +1,29 @@
-# Hướng dẫn cài đặt & tự động điền dữ liệu Google Sheet CMS
+# Hướng dẫn cài đặt Google Sheet CMS (Sửa trực tiếp trên Sheet, không cần mở Apps Script)
 
-- **Google Sheet của bạn:** `https://docs.google.com/spreadsheets/d/1v-WuSh5M3V1az6970Y8sP6OhOUoAeTYhHy6MS73zVRU/edit?gid=0#gid=0`
-- **Google Apps Script của bạn:** `https://script.google.com/home/projects/1Vw03BfXfgtozhiYZbvryJj-DvwAttxm53UQ4UN2titecCo7-il1bGjWG/edit`
-- **Mã nguồn chuẩn để dán vào Apps Script:** [`apps-script/Code.gs`](file:///D:/Học%20tập/Web_Viet_Nhat/apps-script/Code.gs)
-
----
-
-## Phần 1: Cài đặt & tự động điền dữ liệu vào Google Sheet (1 lần duy nhất)
-
-1. Mở link Apps Script:
-   `https://script.google.com/home/projects/1Vw03BfXfgtozhiYZbvryJj-DvwAttxm53UQ4UN2titecCo7-il1bGjWG/edit`
-2. Xóa toàn bộ code cũ, copy toàn bộ nội dung file [`apps-script/Code.gs`](file:///D:/Học%20tập/Web_Viet_Nhat/apps-script/Code.gs) và dán vào, rồi bấm **`Ctrl + S`**.
-   *(Mã nguồn đã gắn sẵn ID Google Sheet `1v-WuSh5M3V1az6970Y8sP6OhOUoAeTYhHy6MS73zVRU` của bạn).*
-3. Trên thanh công cụ phía trên của Apps Script, ở ô chọn hàm bên cạnh nút **Chạy (Run)**, chọn **`khoiTaoTatCaDuLieuVietNhat`** rồi bấm **Chạy (Run)** (cấp quyền truy cập Google Sheet nếu Google hỏi).
-4. Mở lại Google Sheet `1v-WuSh5M3V1az6970Y8sP6OhOUoAeTYhHy6MS73zVRU` và bấm F5 — toàn bộ **8 tab** đã được tạo và điền sẵn dữ liệu Việt - Nhật chuẩn:
-   - `home`: Tiêu đề, nút bấm, khẩu hiệu, thống kê, địa chỉ/SĐT/email, mạng xã hội (`key | vi | ja | en | note`)
-   - `about`: Giới thiệu, sứ mệnh, tầm nhìn, lịch sử (`key | vi | ja | en | note`)
-   - `programs`: Danh sách chương trình trao đổi, học bổng, tiếng Nhật
-   - `news`: Tin tức, thông báo, hội thảo
-   - `faculty`: Đội ngũ giảng viên & cố vấn
-   - `partners`: Danh sách các trường đại học đối tác tại Nhật Bản
-   - `admissions`: Nơi tự động lưu hồ sơ từ trang `/admissions`
-   - `contact`: Nơi tự động lưu thắc mắc từ trang `/contact`
-5. Bấm **Triển khai (Deploy)** ➔ **Quản lý các bản triển khai (Manage deployments)** ➔ bấm biểu tượng **Chỉnh sửa (cây bút)** ➔ Version chọn **Phiên bản mới (New version)** ➔ **Triển khai (Deploy)** *(để giữ nguyên URL trong [`.env.local`](file:///D:/Học%20tập/Web_Viet_Nhat/.env.local))*.
+- **Google Sheet:** `https://docs.google.com/spreadsheets/d/1v-WuSh5M3V1az6970Y8sP6OhOUoAeTYhHy6MS73zVRU/edit?gid=0#gid=0`
+- **Apps Script:** `https://script.google.com/home/projects/1Vw03BfXfgtozhiYZbvryJj-DvwAttxm53UQ4UN2titecCo7-il1bGjWG/edit`
+- **Mã nguồn Apps Script:** [`apps-script/Code.gs`](file:///D:/Học%20tập/Web_Viet_Nhat/apps-script/Code.gs)
 
 ---
 
-## Phần 2: Cách người không rành code chỉnh sửa nội dung trên Google Sheet
+## Cài đặt đúng 1 lần duy nhất
 
-- **Sửa chữ trên Trang chủ / Giới thiệu / Liên hệ:** Vào tab `home` hoặc `about`, tìm dòng có `key` tương ứng (ví dụ `main_title`, `subtitle`, `badge`, `contact_phone`) và sửa trực tiếp ở cột `vi`, `ja`, `en` (nếu bỏ trống `ja`/`en`, web tự lấy `vi`).
-- **Thêm trường đại học đối tác Nhật Bản:** Vào tab `partners`, thêm 1 dòng tên trường (cột `status` là `TRUE`).
-- **Thêm / sửa Chương trình hoặc Tin tức mới:** Thêm dòng ở cuối tab `programs` hoặc `news`. Có thể bỏ trống cột `slug` rồi bấm menu **🎓 Quản trị Web Việt - Nhật ➔ Tự động tạo Slug**.
-- **Ẩn tạm một dòng mà không cần xóa:** Đổi cột `status` thành `FALSE`.
-- **Kiểm tra API trả về trực tiếp:**
-  - `?sheet=home` → trả mảng JSON của tab `home`
-  - `?sheet=programs` → trả mảng JSON của tab `programs` (tách `features` thành mảng)
-  - `?sheet=news` → trả mảng JSON của tab `news`
-  - `?sheet=all` → trả toàn bộ dữ liệu tất cả các tab trong 1 request
-- **Xem thay đổi ngay lập tức:** Bấm menu **🎓 Quản trị Web Việt - Nhật ➔ Xóa Cache API ngay**, sau đó mở web kèm `?refresh=1` (ví dụ `http://localhost:3000/?refresh=1`).
+1. Mở link Apps Script ở trên, xóa code cũ, copy toàn bộ file [`apps-script/Code.gs`](file:///D:/Học%20tập/Web_Viet_Nhat/apps-script/Code.gs) dán vào và lưu (`Ctrl + S`).
+2. Trên thanh công cụ Apps Script, chọn hàm **`khoiTaoTatCaDuLieuVietNhat`** ➔ bấm **Chạy (Run)** (chấp nhận cấp quyền Google Sheet).
+   - Hàm này sẽ tự tạo và điền sẵn đủ **8 tab** vào đúng Google Sheet `1v-WuSh5M3V1az6970Y8sP6OhOUoAeTYhHy6MS73zVRU` của bạn:
+     `home`, `about`, `programs`, `news`, `faculty`, `partners`, `admissions`, `contact`.
+3. Bấm **Triển khai (Deploy)** ➔ **Quản lý các bản triển khai (Manage deployments)** ➔ bấm **Chỉnh sửa (cây bút)** ➔ chọn **Phiên bản mới (New version)** ➔ **Triển khai (Deploy)** (`Execute as: Me`, `Who has access: Anyone`).
+
+---
+
+## Từ đó về sau: Chỉ cần mở Google Sheet để sửa, KHÔNG bao giờ phải mở lại Apps Script
+
+- `doGet(e)` đọc trực tiếp từ Google Sheet (không lưu `CacheService`), và website cũng gọi `cache: "no-store"`.
+- Bạn sửa ô nào trên tab `home`, `about`, `programs`, `news`, `faculty`, `partners` ➔ bấm **F5 tải lại trang web là thấy thay đổi ngay lập tức**.
+- Tên cột hỗ trợ linh hoạt theo chuẩn quen thuộc từ `webviethann`:
+  - **`home`**: `key | vi | ja | en` (`badge`, `main_title`, `subtitle`, `btn_explore`, `btn_contact`, `card_title`, `card_subtitle`, `stat_students`, `section_news_title`, `btn_view_all`, `btn_read_more`...)
+  - **`about`**: `Mã nội dung | Tiếng Việt | Tiếng Nhật | Tiếng Anh` (`tieu_de_chinh`, `phu_de`, `mo_ta_chinh`, `su_menh_tieu_de`, `su_menh_mo_ta`, `tam_nhin_tieu_de`, `tam_nhin_mo_ta`, `lich_su_tieu_de`, `lich_su_1`, `lich_su_2`)
+  - **`faculty`**: `ID | Tên | Chức vụ VI | Chức vụ EN | Chuyên môn VI | Chuyên môn EN | Mô tả VI | Mô tả EN | Đơn vị VI | Đơn vị EN | Hiển thị` (`TRUE`/`FALSE`)
+  - **`programs`**: `slug | category | title | titleJa | titleEn | description | descriptionJa | descriptionEn | duration | features` (dùng dấu `,` hoặc `|`)
+  - **`news`**: `slug | category | date | featured | title | titleJa | titleEn | excerpt | excerptJa | excerptEn | content | contentJa | contentEn`
+  - **`partners`**: `name | country | countryJa | countryEn | status | order`

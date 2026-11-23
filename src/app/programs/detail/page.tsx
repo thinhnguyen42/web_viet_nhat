@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Container from "@/components/layout/Container";
 import Button from "@/components/ui/Button";
 import ClassicalSkeleton from "@/components/ui/ClassicalSkeleton";
+import pagesJson from "@/content/pages.json";
 import { useSiteData } from "@/components/providers/SiteDataProvider";
 import ProgramDetailClient from "../[slug]/ProgramDetailClient";
 
@@ -12,6 +13,7 @@ function DynamicProgramDetailInner() {
   const searchParams = useSearchParams();
   const slug = searchParams.get("slug") || "";
   const { programs, isLoadedFromSheet } = useSiteData();
+  const detailContent = pagesJson.programs.detail;
 
   const program = programs.find((p) => p.slug === slug);
 
@@ -23,13 +25,13 @@ function DynamicProgramDetailInner() {
       <section className="section-padding min-h-[60vh] flex items-center justify-center bg-white">
         <Container className="text-center">
           <h1 className="font-heading text-3xl font-bold mb-3 text-neutral-900">
-            Không tìm thấy chương trình
+            {detailContent.notFoundTitle}
           </h1>
           <p className="text-neutral-500 mb-8 max-w-md mx-auto text-base">
-            Chương trình bạn tìm kiếm có thể đã tạm ẩn hoặc thay đổi đường dẫn trên Google Sheet.
+            {detailContent.notFoundDesc}
           </p>
           <Button href="/programs" size="lg">
-            Quay lại danh sách chương trình
+            {detailContent.notFoundButton}
           </Button>
         </Container>
       </section>

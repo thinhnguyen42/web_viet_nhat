@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <rect width="120" height="120" rx="24" fill="#fdf2f8"/>
+  <rect x="30" y="28" width="60" height="64" rx="10" fill="#ffffff" stroke="#1e3a8a" stroke-width="2.5"/>
+  <path d="M44 46h32M44 60h32M44 74h20" stroke="#be185d" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="82" cy="82" r="14" fill="#a81c1c"/>
+  <text x="82" y="86" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="bold" font-family="sans-serif">日</text>
+</svg>

@@ -1,0 +1,205 @@
+{
+  "about": {
+    "subtitle": {
+      "vi": "Cầu nối học thuật, nghiên cứu khoa học và phát triển nguồn nhân lực chất lượng cao giữa Việt Nam và Nhật Bản.",
+      "ja": "ベトナムと日本の学術研究協力および高度人材育成をつなぐ公式プラットフォーム。",
+      "en": "Bridging academic research, higher education, and talent development between Vietnam and Japan."
+    },
+    "introDefault": {
+      "vi": "Trung Tâm Hợp Tác Học Thuật Việt - Nhật trực thuộc Trường Đại học Mở TP.HCM có sứ mệnh đẩy mạnh nghiên cứu song phương, tổ chức các chương trình trao đổi học sinh - sinh viên sang các trường đại học hàng đầu tại Nhật Bản du học.",
+      "ja": "日越学術協力センターは、ベトナムと日本の学術共同研究を促進し、日本の協定大学への学生交換留学プログラムを強力に支援しています。",
+      "en": "The Vietnam - Japan Academic Center is dedicated to advancing bilateral research cooperation and facilitating student exchange programs to top universities in Japan."
+    },
+    "missionDefault": {
+      "vi": "Xây dựng cầu nối học thuật bền vững giữa Việt Nam và Nhật Bản. Đào tạo sinh viên xuất sắc, trang bị năng lực tiếng Nhật học thuật và khả năng nghiên cứu khoa học để du học trao đổi thành công tại Nhật Bản.",
+      "ja": "ベトナムと日本の強固な学術ネットワークを構築し、日本への交換留学を成功させる専門的学術日本語力と研究能力を備えた優秀な学生を育成します。",
+      "en": "Build enduring academic partnerships between Vietnam and Japan, nurturing students with academic Japanese proficiency and research capabilities."
+    },
+    "visionDefault": {
+      "vi": "Trở thành trung tâm kiểu mẫu hàng đầu trong kết nối hợp tác giáo dục đại học, trao đổi học sinh - sinh viên và chuyển giao tri thức giữa các trường đại học Việt Nam và Nhật Bản.",
+      "ja": "ベトナムと日本の大学間学術交流、交換留学、知識移転における先導的かつ模範的な教育協力センターを目指します。",
+      "en": "Become the premier center for higher education cooperation, student exchanges, and knowledge transfer between Vietnam and Japan."
+    },
+    "history1Default": {
+      "vi": "Được thành lập trong khuôn khổ chiến lược quốc tế hóa giáo dục của Trường Đại học Mở TP.HCM, Trung Tâm Hợp Tác Học Thuật Việt - Nhật là cầu nối tin cậy hàng đầu cho sinh viên Việt Nam tiếp cận các chương trình trao đổi và học bổng du học Nhật Bản danh giá.",
+      "ja": "ホーチミン市オープン大学の国際化推進戦略のもとで設立された日越学術協力センターは、ベトナム人学生が日本のトップ大学への交換留学および名誉ある奨学金を獲得するための信頼できる窓口です。",
+      "en": "Established under the internationalization strategy of HCMCOU, the Vietnam - Japan Academic Center serves as the premier bridge for students seeking exchange programs and prestigious scholarships in Japan."
+    },
+    "history2Default": {
+      "vi": "Trung tâm liên tục mở rộng các chương trình học bổng JASSO, học bổng MEXT, hội thảo khoa học quốc tế song phương và các chuyến thực tập học thuật tại Nhật Bản, hỗ trợ tối đa cho sinh viên hiện thực hóa ước mơ du học.",
+      "ja": "当センターでは、JASSO奨学金や国費留学生（MEXT）奨学金の支援、日越共同国際学術シンポジウム、日本での学術インターンシップを継続的に拡大しています。",
+      "en": "The Center actively expands JASSO scholarships, MEXT support, bilateral scientific conferences, and academic internships in Japan."
+    },
+    "heritageImage": "/images/introductions/about-heritage.svg",
+    "highlights": [
+      {
+        "iconKey": "award",
+        "title": { "vi": "Chứng nhận chuẩn Nhật Bản", "ja": "日本基準の学術認定", "en": "Japanese Academic Standard" },
+        "desc": { "vi": "Đào tạo theo khung năng lực tiếng Nhật học thuật JLPT N3 - N1 và kỹ năng nghiên cứu.", "ja": "JLPT上位級および学術研究スキルに特化した教育カリキュラム。", "en": "Curriculum aligned with JLPT N3-N1 academic Japanese standards." }
+      },
+      {
+        "iconKey": "users",
+        "title": { "vi": "Giảng viên & Giáo sư đối tác", "ja": "日越の教授陣・専門家", "en": "Distinguished Professors" },
+        "desc": { "vi": "100% giảng viên trình độ thạc sĩ - tiến sĩ tu nghiệp tại Nhật và các giáo sư thỉnh giảng người Nhật.", "ja": "日本留学経験を持つ修士・博士取得者および日本の客員教授陣。", "en": "Faculty with degrees from Japan and visiting Japanese professors." }
+      },
+      {
+        "iconKey": "globe",
+        "title": { "vi": "Đối tác đại học hàng đầu", "ja": "日本のトップ協定大学", "en": "Top Partner Universities" },
+        "desc": { "vi": "Hợp tác trực tiếp với ĐH Tokyo, ĐH Kyoto, ĐH Osaka, ĐH Tohoku và học bổng JASSO.", "ja": "東京大学、京都大学、大阪大学、東北大学およびJASSOとの強固な連携。", "en": "Direct partnerships with UTokyo, Kyoto, Osaka, Tohoku and JASSO." }
+      }
+    ]
+  },
+  "faculty": {
+    "subtitle": {
+      "vi": "Đội ngũ phó giáo sư, tiến sĩ, thạc sĩ và chuyên gia ngôn ngữ bản ngữ giàu kinh nghiệm giảng dạy và nghiên cứu.",
+      "ja": "教育・研究経験豊富な日越の准教授・博士・修士および専門指導陣。",
+      "en": "Experienced associate professors, doctors, masters, and native Japanese academic specialists."
+    },
+    "defaultUnit": {
+      "vi": "Giảng viên cơ hữu HCMCOU",
+      "ja": "HCMCOU 専任教員",
+      "en": "HCMCOU Faculty"
+    }
+  },
+  "programs": {
+    "subtitle": {
+      "vi": "Khám phá các khóa đào tạo ngôn ngữ, chuyên đề văn hóa và chương trình liên kết trao đổi học thuật.",
+      "ja": "アカデミック日本語講座、文化交流、日本の協定大学との交換留学プログラムをご紹介します。",
+      "en": "Explore academic Japanese courses, cultural seminars, and bilateral university exchange programs."
+    },
+    "filters": [
+      { "key": "all", "labelKey": "all" },
+      { "key": "exchange", "labelKey": "exchange" },
+      { "key": "scholarship", "labelKey": "scholarship" },
+      { "key": "japanese", "labelKey": "japanese" }
+    ],
+    "categoryBadges": {
+      "scholarship": { "vi": "Học bổng", "ja": "奨学金", "en": "Scholarship", "bannerVi": "Học bổng Nhật Bản", "icon": "🎓" },
+      "japanese": { "vi": "Tiếng Nhật", "ja": "日本語", "en": "Japanese", "bannerVi": "Tiếng Nhật học thuật", "icon": "🇯🇵" },
+      "exchange": { "vi": "Trao đổi", "ja": "交換留学", "en": "Exchange", "bannerVi": "Trao đổi sinh viên", "icon": "🔄" }
+    },
+    "detail": {
+      "overviewTitle": { "vi": "Tổng quan chương trình", "ja": "プログラム概要", "en": "Program Overview" },
+      "defaultOverview": {
+        "vi": "Chương trình được thiết kế bài bản với mục tiêu trang bị kiến thức toàn diện về ngôn ngữ, văn hóa và kỹ năng nghiên cứu thực tế. Học viên sẽ được đồng hành trực tiếp cùng đội ngũ giảng viên giàu kinh nghiệm và các chuyên gia Nhật Bản.",
+        "ja": "本プログラムは、語学力・学術研究スキル・異文化理解を体系的に身につけ、日本の協定大学での学びと将来キャリアを力強く支援するよう設計されています。",
+        "en": "This program is systematically designed to equip students with academic language proficiency, cultural literacy, and practical research skills under the guidance of experienced Vietnamese and Japanese faculty."
+      },
+      "requirementTitle": { "vi": "Điều kiện & Đối tượng tham gia", "ja": "応募条件・対象者", "en": "Eligibility & Requirements" },
+      "objectivesTitle": { "vi": "Mục tiêu đào tạo", "ja": "養成目標", "en": "Learning Objectives" },
+      "objectives": [
+        { "iconKey": "award", "title": "Năng lực ngôn ngữ chuẩn hóa", "desc": "Tự tin thi đạt các chứng chỉ quốc tế và giao tiếp học thuật lưu loát." },
+        { "iconKey": "book", "title": "Kiến thức văn hóa sâu rộng", "desc": "Hiểu rõ phong tục, tập quán và văn hóa nghiên cứu tại Nhật Bản." },
+        { "iconKey": "user", "title": "Kỹ năng nghiên cứu & hội nhập", "desc": "Kỹ năng viết đề cương, thuyết trình và làm việc trong phòng lab." },
+        { "iconKey": "check", "title": "Cơ hội học bổng & việc làm", "desc": "Kết nối học bổng JASSO, MEXT và cơ hội nghề nghiệp Việt - Nhật." }
+      ],
+      "sidebarTitle": { "vi": "Thông tin khóa học", "ja": "プログラム情報", "en": "Program Information" },
+      "featuresTitle": { "vi": "Đặc quyền học viên:", "ja": "参加特典：", "en": "Student Benefits:" },
+      "ctaButton": { "vi": "Đăng ký tư vấn ngay", "ja": "今すぐ留学相談する", "en": "Apply for Consultation" },
+      "notFoundTitle": "Không tìm thấy chương trình",
+      "notFoundDesc": "Chương trình bạn tìm kiếm có thể đã tạm ẩn hoặc thay đổi đường dẫn trên Google Sheet.",
+      "notFoundButton": "Quay lại danh sách chương trình"
+    }
+  },
+  "news": {
+    "subtitle": {
+      "vi": "Cập nhật thông tin tuyển sinh, học bổng, hội thảo chuyên đề và các sự kiện giao lưu văn hóa sắp diễn ra.",
+      "ja": "募集要項、奨学金、学術シンポジウム、文化交流イベントの最新情報をお届けします。",
+      "en": "Latest updates on admissions, scholarships, academic conferences, and cultural exchange events."
+    },
+    "featuredBadge": {
+      "vi": "★ Tiêu điểm",
+      "ja": "★ 注目記事",
+      "en": "★ Featured"
+    },
+    "detail": {
+      "shareLabel": { "vi": "Chia sẻ", "ja": "共有", "en": "Share" },
+      "copiedMessage": "Đã sao chép liên kết vào bộ nhớ tạm!",
+      "supportTitle": { "vi": "Thông tin liên hệ & Hỗ trợ học viên", "ja": "お問い合わせ・留学サポート窓口", "en": "Student Support & Contact" },
+      "supportBody": {
+        "vi": "Mọi thắc mắc về chương trình đào tạo hoặc quy trình nộp hồ sơ, quý phụ huynh và sinh viên vui lòng liên hệ trực tiếp qua Văn phòng Trung tâm hoặc đăng ký tư vấn trực tuyến.",
+        "ja": "プログラムや出願手続きに関するご質問は、日越学術協力センター事務局またはオンライン相談窓口までお気軽にお問い合わせください。",
+        "en": "For any inquiries regarding exchange programs or application procedures, please contact the Vietnam - Japan Academic Center office or submit an online consultation request."
+      },
+      "topicLabel": { "vi": "Chủ đề:", "ja": "カテゴリー:", "en": "Category:" },
+      "ctaButton": { "vi": "Đăng ký tham gia ngay", "ja": "今すぐ出願・登録する", "en": "Apply Now" },
+      "notFoundTitle": "Không tìm thấy bài viết",
+      "notFoundDesc": "Bài viết bạn đang tìm kiếm có thể đã tạm ẩn hoặc thay đổi đường dẫn trên Google Sheet.",
+      "notFoundButton": "Quay lại trang tin tức"
+    }
+  },
+  "admissions": {
+    "subtitle": "Quy trình đăng ký tinh gọn, nhanh chóng và hỗ trợ tận tâm từ đội ngũ chuyên viên tuyển sinh.",
+    "formDescription": "Điền thông tin bên dưới để được chuyên viên hỗ trợ lộ trình học tập miễn phí.",
+    "selectPlaceholder": "-- Chọn chương trình quan tâm --",
+    "fullNamePlaceholder": "Nguyễn Văn A",
+    "emailPlaceholder": "name@example.com",
+    "phonePlaceholder": "0901234567",
+    "messagePlaceholder": "Câu hỏi hoặc nguyện vọng cần tư vấn thêm...",
+    "submittingLabel": "Đang gửi...",
+    "successMessage": "Đăng ký thành công! Thông tin của bạn đã được chuyển tới Hội đồng tuyển sinh du học Nhật Bản.",
+    "errorFallback": "Gửi đăng ký không thành công. Vui lòng thử lại sau.",
+    "faqHeading": "Câu hỏi thường gặp (FAQ)",
+    "timelineSteps": [
+      {
+        "step": 1,
+        "title": "Tìm hiểu thông tin",
+        "titleEn": "Explore Programs",
+        "desc": "Lựa chọn khóa học ngôn ngữ hoặc chương trình trao đổi phù hợp với mục tiêu.",
+        "descEn": "Select the language or exchange program matching your academic goals."
+      },
+      {
+        "step": 2,
+        "title": "Nộp hồ sơ trực tuyến",
+        "titleEn": "Submit Application",
+        "desc": "Điền đầy đủ thông tin vào biểu mẫu đăng ký tư vấn trực tuyến bên dưới.",
+        "descEn": "Fill out the online consultation and registration form below."
+      },
+      {
+        "step": 3,
+        "title": "Tư vấn & Hoàn tất",
+        "titleEn": "Consultation & Review",
+        "desc": "Nhận hướng dẫn chi tiết từ chuyên viên, kiểm tra trình độ đầu vào miễn phí.",
+        "descEn": "Receive guidance from our counselors and take a free placement test."
+      },
+      {
+        "step": 4,
+        "title": "Nhập học chính thức",
+        "titleEn": "Enrollment & Orientation",
+        "desc": "Nhận thời khóa biểu, tài liệu học tập và tham gia buổi khai giảng định hướng.",
+        "descEn": "Receive schedules, textbooks, and attend the orientation session."
+      }
+    ],
+    "faqs": [
+      {
+        "q": "Sinh viên chưa có chứng chỉ tiếng Nhật JLPT có đăng ký tham gia tư vấn được không?",
+        "a": "Hoàn toàn được. Trung tâm có các khóa tiếng Nhật học thuật dự bị từ sơ cấp lên N3/N2 và hỗ trợ sinh viên lập kế hoạch du học từ sớm."
+      },
+      {
+        "q": "Điều kiện tham gia chương trình trao đổi sinh viên sang Nhật Bản là gì?",
+        "a": "Sinh viên hoàn thành ít nhất 1 năm học đại học, có điểm trung bình GPA từ 2.5 trở lên và năng lực ngoại ngữ JLPT N3 (hoặc IELTS 6.0 đối với chương trình giảng dạy bằng tiếng Anh tại các trường ĐH Nhật)."
+      },
+      {
+        "q": "Trung tâm có chính sách hỗ trợ học bổng du học Nhật Bản không?",
+        "a": "Có. Trung tâm trực tiếp hướng dẫn và đề cử sinh viên xét cấp học bổng trao đổi sinh viên JASSO (80.000 Yên/tháng) và học bổng Chính phủ MEXT của Nhật Bản."
+      }
+    ]
+  },
+  "contact": {
+    "subtitle": "Chúng tôi luôn sẵn sàng lắng nghe và giải đáp mọi câu hỏi của quý phụ huynh và học viên.",
+    "namePlaceholder": "Nguyễn Văn A",
+    "emailPlaceholder": "name@example.com",
+    "subjectPlaceholder": "Cần tư vấn chương trình trao đổi du học Nhật Bản...",
+    "messagePlaceholder": "Nội dung chi tiết cần hỗ trợ...",
+    "submittingLabel": "Đang gửi...",
+    "successMessage": "Tin nhắn của bạn đã được gửi thành công! Bộ phận hợp tác quốc tế sẽ phản hồi trong thời gian sớm nhất.",
+    "errorFallback": "Không thể gửi tin nhắn. Vui lòng thử lại sau.",
+    "socialLabel": "Kết nối với chúng tôi:"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Trang không tồn tại",
+    "description": "Trang bạn đang tìm kiếm có thể đã bị xóa, đổi tên hoặc tạm thời không khả dụng.",
+    "button": "Về trang chủ"
+  }
+}

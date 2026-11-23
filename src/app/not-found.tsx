@@ -1,21 +1,24 @@
 import Button from "@/components/ui/Button";
 import Container from "@/components/layout/Container";
+import pagesJson from "@/content/pages.json";
 
 export default function NotFound() {
+  const { code, title, description, button } = pagesJson.notFound;
+
   return (
     <section className="section-padding min-h-[60vh] flex items-center justify-center bg-white">
       <Container className="text-center">
         <p className="text-8xl md:text-9xl font-heading font-extrabold text-primary-100 mb-4 select-none">
-          404
+          {code}
         </p>
         <h1 className="font-heading text-3xl font-bold mb-3 text-neutral-900">
-          Trang không tồn tại
+          {title}
         </h1>
         <p className="text-neutral-500 mb-8 max-w-md mx-auto text-base">
-          Trang bạn đang tìm kiếm có thể đã bị xóa, đổi tên hoặc tạm thời không khả dụng.
+          {description}
         </p>
         <Button href="/" size="lg">
-          Về trang chủ
+          {button}
         </Button>
       </Container>
     </section>

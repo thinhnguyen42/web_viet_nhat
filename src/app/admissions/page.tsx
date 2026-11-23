@@ -8,60 +8,16 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import Button from "@/components/ui/Button";
+import pagesJson from "@/content/pages.json";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { useSiteData } from "@/components/providers/SiteDataProvider";
-
-const timelineSteps = [
-  {
-    step: 1,
-    title: "Tìm hiểu thông tin",
-    titleEn: "Explore Programs",
-    desc: "Lựa chọn khóa học ngôn ngữ hoặc chương trình trao đổi phù hợp với mục tiêu.",
-    descEn: "Select the language or exchange program matching your academic goals.",
-  },
-  {
-    step: 2,
-    title: "Nộp hồ sơ trực tuyến",
-    titleEn: "Submit Application",
-    desc: "Điền đầy đủ thông tin vào biểu mẫu đăng ký tư vấn trực tuyến bên dưới.",
-    descEn: "Fill out the online consultation and registration form below.",
-  },
-  {
-    step: 3,
-    title: "Tư vấn & Hoàn tất",
-    titleEn: "Consultation & Review",
-    desc: "Nhận hướng dẫn chi tiết từ chuyên viên, kiểm tra trình độ đầu vào miễn phí.",
-    descEn: "Receive guidance from our counselors and take a free placement test.",
-  },
-  {
-    step: 4,
-    title: "Nhập học chính thức",
-    titleEn: "Enrollment & Orientation",
-    desc: "Nhận thời khóa biểu, tài liệu học tập và tham gia buổi khai giảng định hướng.",
-    descEn: "Receive schedules, textbooks, and attend the orientation session.",
-  },
-];
-
-const faqs = [
-  {
-    q: "Sinh viên chưa có chứng chỉ tiếng Nhật JLPT có đăng ký tham gia tư vấn được không?",
-    a: "Hoàn toàn được. Trung tâm có các khóa tiếng Nhật học thuật dự bị từ sơ cấp lên N3/N2 và hỗ trợ sinh viên lập kế hoạch du học từ sớm.",
-  },
-  {
-    q: "Điều kiện tham gia chương trình trao đổi sinh viên sang Nhật Bản là gì?",
-    a: "Sinh viên hoàn thành ít nhất 1 năm học đại học, có điểm trung bình GPA từ 2.5 trở lên và năng lực ngoại ngữ JLPT N3 (hoặc IELTS 6.0 đối với chương trình giảng dạy bằng tiếng Anh tại các trường ĐH Nhật).",
-  },
-  {
-    q: "Trung tâm có chính sách hỗ trợ học bổng du học Nhật Bản không?",
-    a: "Có. Trung tâm trực tiếp hướng dẫn và đề cử sinh viên xét cấp học bổng trao đổi sinh viên JASSO (80.000 Yên/tháng) và học bổng Chính phủ MEXT của Nhật Bản.",
-  },
-];
-
 import { submitApplication } from "@/lib/appsScriptApi";
 
 export default function AdmissionsPage() {
   const { locale, t } = useLanguage();
   const { programs } = useSiteData();
+  const admissionsContent = pagesJson.admissions;
+
   const [form, setForm] = useState({
     fullName: "",
     email: "",
@@ -70,7 +26,10 @@ export default function AdmissionsPage() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
-  const [statusMessage, setStatusMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [statusMessage, setStatusMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -97,7 +56,7 @@ export default function AdmissionsPage() {
     if (res.success) {
       setStatusMessage({
         type: "success",
-        text: "Đăng ký thành công! Thông tin của bạn đã được chuyển tới Hội đồng tuyển sinh du học Nhật Bản.",
+        text: admissionsContent.successMessage,
       });
       setForm({
         fullName: "",
@@ -109,7 +68,7 @@ export default function AdmissionsPage() {
     } else {
       setStatusMessage({
         type: "error",
-        text: res.message || "Gửi đăng ký không thành công. Vui lòng thử lại sau.",
+        text: res.message || admissionsContent.errorFallback,
       });
     }
   };
@@ -119,7 +78,7 @@ export default function AdmissionsPage() {
       <Container>
         <SectionHeading
           title={t.admissions.title}
-          subtitle="Quy trình đăng ký tinh gọn, nhanh chóng và hỗ trợ tận tâm từ đội ngũ chuyên viên tuyển sinh."
+          subtitle={admissionsContent.subtitle}
         />
 
         {/* Timeline */}
@@ -128,7 +87,7 @@ export default function AdmissionsPage() {
             {t.admissions.timeline}
           </h3>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {timelineSteps.map((s, i) => (
+            {admissionsContent.timelineSteps.map((s, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
@@ -159,7 +118,7 @@ export default function AdmissionsPage() {
                 {t.admissions.form}
               </h3>
               <p className="text-neutral-600 text-sm">
-                Điền thông tin bên dưới để được chuyên viên hỗ trợ lộ trình học tập miễn phí.
+                {admissionsContent.formDescription}
               </p>
             </div>
 
@@ -182,7 +141,7 @@ export default function AdmissionsPage() {
                 value={form.fullName}
                 onChange={handleChange}
                 required
-                placeholder="Nguyễn Văn A"
+                placeholder={admissionsContent.fullNamePlaceholder}
               />
 
               <div className="grid sm:grid-cols-2 gap-4">
@@ -193,7 +152,7 @@ export default function AdmissionsPage() {
                   value={form.email}
                   onChange={handleChange}
                   required
-                  placeholder="name@example.com"
+                  placeholder={admissionsContent.emailPlaceholder}
                 />
                 <Input
                   label={t.admissions.phone}
@@ -202,7 +161,7 @@ export default function AdmissionsPage() {
                   value={form.phone}
                   onChange={handleChange}
                   required
-                  placeholder="0901234567"
+                  placeholder={admissionsContent.phonePlaceholder}
                 />
               </div>
 
@@ -221,7 +180,7 @@ export default function AdmissionsPage() {
                   required
                   className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm bg-white text-neutral-900 cursor-pointer"
                 >
-                  <option value="">-- Chọn chương trình quan tâm --</option>
+                  <option value="">{admissionsContent.selectPlaceholder}</option>
                   {programs.map((p) => (
                     <option key={p.slug} value={p.slug}>
                       {locale === "vi" ? p.title : p.titleEn}
@@ -235,7 +194,7 @@ export default function AdmissionsPage() {
                 name="message"
                 value={form.message}
                 onChange={handleChange}
-                placeholder="Câu hỏi hoặc nguyện vọng cần tư vấn thêm..."
+                placeholder={admissionsContent.messagePlaceholder}
                 rows={3}
               />
 
@@ -245,7 +204,7 @@ export default function AdmissionsPage() {
                 className="w-full mt-4"
                 disabled={submitted}
               >
-                {submitted ? "Đang gửi..." : t.admissions.submit}
+                {submitted ? admissionsContent.submittingLabel : t.admissions.submit}
               </Button>
             </form>
           </div>
@@ -254,10 +213,10 @@ export default function AdmissionsPage() {
         {/* FAQs */}
         <div className="max-w-3xl mx-auto">
           <h3 className="font-heading text-2xl font-bold text-center mb-8 text-neutral-900">
-            Câu hỏi thường gặp (FAQ)
+            {admissionsContent.faqHeading}
           </h3>
           <div className="space-y-4">
-            {faqs.map((faq, i) => (
+            {admissionsContent.faqs.map((faq, i) => (
               <div
                 key={i}
                 className="p-6 rounded-2xl border border-neutral-100 bg-neutral-50"

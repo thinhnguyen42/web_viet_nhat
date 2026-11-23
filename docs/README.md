@@ -3,6 +3,7 @@
 Tài liệu kỹ thuật và nhật ký các phiên làm việc (work sessions) cho dự án **Trung Tâm Hợp Tác Học Thuật Việt - Nhật (HCMCOU)**.
 
 ## Tài liệu tổng kết dự án
+- [WORKFLOW.md](file:///D:/Học%20tập/Web_Viet_Nhat/WORKFLOW.md) — Tài liệu Workflow vận hành, quản trị dữ liệu Google Sheets + JSON + 3 thư mục ảnh & Kịch bản Demo 5 bước.
 - [PROJECT_DOCUMENTATION.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/PROJECT_DOCUMENTATION.md) — Báo cáo tổng hợp kiến trúc, tech stack, tính năng, hướng dẫn vận hành & triển khai toàn dự án.
 - [HUONG_DAN_CAI_DAT.md](file:///D:/Học%20tập/Web_Viet_Nhat/apps-script/HUONG_DAN_CAI_DAT.md) — Hướng dẫn cài đặt và sử dụng Google Apps Script / Google Sheet CMS.
 
@@ -19,6 +20,12 @@ Tài liệu kỹ thuật và nhật ký các phiên làm việc (work sessions) 
 - [2026-11-23-session-02-google-sheet-cms.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-02-google-sheet-cms.md) — Phiên 02: Kế thừa cấu trúc dự án Việt - Hàn, triển khai Google Sheet CMS 6 tab đa ngôn ngữ, route dự phòng `/news/detail` & `/programs/detail`, `/healthz` Nginx, dọn sạch ESLint và đạt 8/8 Playwright tests.
 - [2026-11-23-session-03-github-push-and-azure-check.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-03-github-push-and-azure-check.md) — Phiên 03: Kiểm tra tài nguyên Azure VM (`ZaloOaBot`) từ `pm2 list` và đẩy toàn bộ mã nguồn lên `https://github.com/thinhnguyen42/web_viet_nhat.git` (nhánh `main`).
 - [2026-11-23-session-04-sheet-doGet-alignment.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-04-sheet-doGet-alignment.md) — Phiên 04: Chuẩn hóa Apps Script theo `?sheet=` + 8 tab thân thiện (`home`, `about`, `programs`, `news`, `faculty`, `partners`, `admissions`, `contact`) gắn ID Sheet `1v-WuSh5M3V1az6970Y8sP6OhOUoAeTYhHy6MS73zVRU`.
+- [2026-11-23-session-05-demowebou-webvn-branch.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-05-demowebou-webvn-branch.md) — Phiên 05: Đặt `https://github.com/Smart-Home-SH/demowebou.git` làm `origin` (`main` giữ nguyên theo `origin/main`) và đẩy dự án `Web_Viet_Nhat` lên nhánh phụ `webvn`.
+- [2026-11-23-session-06-webviethann-live-sheet-inheritance.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-06-webviethann-live-sheet-inheritance.md) — Phiên 06: Kế thừa Apps Script `webviethann` (`?sheet=<tab>` không cache, `cache: "no-store"`, hỗ trợ đủ cột tiếng Việt `about`/`faculty`), sửa Google Sheet thấy ngay không cần mở Apps Script.
+- [2026-11-23-session-07-json-content-and-3-image-folders.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-07-json-content-and-3-image-folders.md) — Phiên 07: Tách toàn bộ nội dung ra 7 file JSON trong `src/content/`, tổ chức 3 thư mục ảnh (`public/images/website`, `introductions`, `programs-news`), render toàn bộ qua React `.map()` + `next/image` (0 lint errors/warnings, 8/8 Playwright passed).
+- [2026-11-23-session-08-workflow-and-featured-fixes.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-08-workflow-and-featured-fixes.md) — Phiên 08: Kiểm toán Workflow, sửa nhận `1`/`0` cho `featured` & `Hiển thị`, làm nổi bật tin tiêu điểm và hoàn thiện [WORKFLOW.md](file:///D:/Học%20tập/Web_Viet_Nhat/WORKFLOW.md) bản Demo.
+- [2026-11-23-session-09-vija-branch-and-403-block.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-09-vija-branch-and-403-block.md) — Phiên 09: Tạo nhánh `vija` từ `webvn` (`640fc8a`), giữ nguyên `main` (`198391e`), ghi nhận lỗi `HTTP 403` khi push lên `Smart-Home-SH/demowebou.git`.
+- [2026-11-23-session-10-push-personal-vija.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-10-push-personal-vija.md) — Phiên 10: Đẩy thành công nhánh `vija` lên `https://github.com/thinhnguyen42/web_viet_nhat.git` (`personal/vija`), giữ nguyên nhánh `main`.
 
 ## Quy tắc cập nhật tài liệu
 

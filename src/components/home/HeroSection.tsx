@@ -1,29 +1,68 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Button from "@/components/ui/Button";
 import Container from "@/components/layout/Container";
+import homeJson from "@/content/home.json";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { useSiteData } from "@/components/providers/SiteDataProvider";
 
 export default function HeroSection() {
   const { locale, t } = useLanguage();
   const { getConfigText } = useSiteData();
+  const heroDefaults = homeJson.hero;
 
-  const badge = getConfigText("badge", locale, getConfigText("hero_badge", locale, "Đại học Mở TP.HCM"));
-  const title = getConfigText("main_title", locale, getConfigText("hero_title", locale, t.hero.title));
-  const subtitle = getConfigText("subtitle", locale, getConfigText("hero_subtitle", locale, t.hero.subtitle));
-  const cta1 = getConfigText("btn_explore", locale, getConfigText("hero_cta1", locale, t.hero.cta1));
-  const cta2 = getConfigText("btn_contact", locale, getConfigText("hero_cta2", locale, t.hero.cta2));
-  const cardTag = getConfigText("card_tag", locale, "Vietnam - Japan Academic Exchange");
-  const cardTitle = getConfigText("card_title", locale, "VIỆT NAM • NHẬT BẢN");
-  const cardSubtitle = getConfigText("card_subtitle", locale, "Hợp tác học thuật & Trao đổi sinh viên du học");
-  const statCount = getConfigText("stat_students_count", locale, "500+");
-  const statStudents = getConfigText("stat_students", locale, "Học viên mỗi năm");
+  const badge = getConfigText(
+    "badge",
+    locale,
+    getConfigText("hero_badge", locale, heroDefaults.defaultBadge[locale])
+  );
+  const title = getConfigText(
+    "main_title",
+    locale,
+    getConfigText("hero_title", locale, t.hero.title)
+  );
+  const subtitle = getConfigText(
+    "subtitle",
+    locale,
+    getConfigText("hero_subtitle", locale, t.hero.subtitle)
+  );
+  const cta1 = getConfigText(
+    "btn_explore",
+    locale,
+    getConfigText("hero_cta1", locale, t.hero.cta1)
+  );
+  const cta2 = getConfigText(
+    "btn_contact",
+    locale,
+    getConfigText("hero_cta2", locale, t.hero.cta2)
+  );
+  const cardTag = getConfigText("card_tag", locale, heroDefaults.cardTag);
+  const cardTitle = getConfigText(
+    "card_title",
+    locale,
+    heroDefaults.cardTitle[locale]
+  );
+  const cardSubtitle = getConfigText(
+    "card_subtitle",
+    locale,
+    heroDefaults.cardSubtitle[locale]
+  );
+  const heroImage = getConfigText("hero_image", locale, heroDefaults.heroImage);
+  const statCount = getConfigText(
+    "stat_students_count",
+    locale,
+    heroDefaults.statCount
+  );
+  const statStudents = getConfigText(
+    "stat_students",
+    locale,
+    heroDefaults.statLabel[locale]
+  );
 
   return (
     <section className="relative min-h-[85vh] flex items-center bg-gradient-to-br from-primary-50/70 via-white to-accent-50/50 overflow-hidden py-12 md:py-20">
-      {/* Decorative shapes */}
       <div className="absolute top-10 right-10 w-72 h-72 bg-accent-200/30 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-10 left-10 w-96 h-96 bg-primary-200/20 rounded-full blur-3xl pointer-events-none" />
 
@@ -65,17 +104,22 @@ export default function HeroSection() {
           >
             <div className="relative mx-auto max-w-lg lg:max-w-none">
               <div className="aspect-[4/3] rounded-3xl bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 shadow-2xl p-8 flex flex-col justify-between text-white overflow-hidden relative border border-primary-400/20">
-                {/* Background Pattern */}
-                <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
+                <Image
+                  src={heroImage}
+                  alt={cardTitle}
+                  fill
+                  unoptimized
+                  className="object-cover opacity-35 pointer-events-none"
+                />
 
                 <div className="relative z-10 flex justify-between items-start">
                   <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold uppercase tracking-wider">
                     {cardTag}
                   </span>
                   <div className="flex gap-3 text-3xl">
-                    <span>🇻🇳</span>
-                    <span>🤝</span>
-                    <span>🇯🇵</span>
+                    {heroDefaults.flags.map((flag, i) => (
+                      <span key={i}>{flag}</span>
+                    ))}
                   </div>
                 </div>
 
@@ -83,24 +127,22 @@ export default function HeroSection() {
                   <p className="text-3xl sm:text-5xl font-heading font-extrabold tracking-tight text-white mb-2">
                     {cardTitle}
                   </p>
-                  <p className="text-primary-200 text-sm sm:text-base font-medium">
+                  <p className="text-primary-100 text-sm sm:text-base font-medium">
                     {cardSubtitle}
                   </p>
                 </div>
 
                 <div className="relative z-10 grid grid-cols-3 gap-2 pt-4 border-t border-white/10 text-center">
-                  <div>
-                    <p className="text-xs text-primary-200">Đối tác</p>
-                    <p className="text-sm font-bold">Top ĐH Nhật Bản</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-primary-200">Học bổng</p>
-                    <p className="text-sm font-bold">JASSO & MEXT</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-primary-200">Cơ hội</p>
-                    <p className="text-sm font-bold">Miễn phí 100%</p>
-                  </div>
+                  {heroDefaults.pillars.map((pillar, i) => (
+                    <div key={i}>
+                      <p className="text-xs text-primary-200">
+                        {pillar.label[locale]}
+                      </p>
+                      <p className="text-sm font-bold">
+                        {pillar.value[locale]}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
 
