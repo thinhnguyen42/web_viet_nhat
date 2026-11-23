@@ -332,7 +332,10 @@ export function normalizeNewsFromSheet(rows: SheetNewsRow[]): NewsArticle[] {
       };
     })
     .filter((a) => Boolean(a.slug && a.title))
-    .sort((a, b) => b.date.localeCompare(a.date));
+    .sort((a, b) => {
+      if (a.featured !== b.featured) return a.featured ? -1 : 1;
+      return b.date.localeCompare(a.date);
+    });
 }
 
 export function normalizeFacultyFromSheet(

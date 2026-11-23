@@ -107,6 +107,11 @@
       "ja": "募集要項、奨学金、学術シンポジウム、文化交流イベントの最新情報をお届けします。",
       "en": "Latest updates on admissions, scholarships, academic conferences, and cultural exchange events."
     },
+    "featuredBadge": {
+      "vi": "★ Tiêu điểm",
+      "ja": "★ 注目記事",
+      "en": "★ Featured"
+    },
     "detail": {
       "shareLabel": { "vi": "Chia sẻ", "ja": "共有", "en": "Share" },
       "copiedMessage": "Đã sao chép liên kết vào bộ nhớ tạm!",

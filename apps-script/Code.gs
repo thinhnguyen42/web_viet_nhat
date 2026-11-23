@@ -128,17 +128,20 @@ function doGet(e) {
           .filter(Boolean);
       }
 
-      // Chuẩn hóa boolean cho tab news
+      // Chuẩn hóa boolean cho tab news (nhận cả TRUE và 1)
       if (sheetName === TABS.NEWS && obj.featured !== undefined) {
-        obj.featured = String(obj.featured).toLowerCase() === "true";
+        const fVal = String(obj.featured).trim().toLowerCase();
+        obj.featured = fVal === "true" || fVal === "1" || fVal === "yes";
       }
 
-      // Chuẩn hóa boolean cho cột Hiển thị / status
+      // Chuẩn hóa boolean cho cột Hiển thị / status (nhận cả TRUE và 1)
       if (obj["Hiển thị"] !== undefined) {
-        obj["Hiển thị"] = String(obj["Hiển thị"]).toLowerCase() === "true";
+        const hVal = String(obj["Hiển thị"]).trim().toLowerCase();
+        obj["Hiển thị"] = hVal === "true" || hVal === "1" || hVal === "yes";
       }
       if (obj.status !== undefined) {
-        obj.status = String(obj.status).toLowerCase() !== "false";
+        const sVal = String(obj.status).trim().toLowerCase();
+        obj.status = !["false", "0", "no", "hidden", "ẩn", "an"].includes(sVal);
       }
 
       return obj;

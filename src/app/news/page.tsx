@@ -47,7 +47,11 @@ export default function NewsPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
               >
-                <Card className="h-full flex flex-col justify-between">
+                <Card
+                  className={`h-full flex flex-col justify-between ${
+                    article.featured ? "ring-2 ring-accent-400/80 shadow-md" : ""
+                  }`}
+                >
                   <div>
                     <div className="aspect-[16/10] bg-neutral-100 overflow-hidden border-b border-neutral-100 relative">
                       <Image
@@ -57,6 +61,11 @@ export default function NewsPage() {
                         unoptimized
                         className="object-cover"
                       />
+                      {article.featured && (
+                        <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-accent-400 text-neutral-900 text-xs font-bold shadow-sm">
+                          {pagesJson.news.featuredBadge[locale]}
+                        </span>
+                      )}
                     </div>
 
                     <div className="p-6">
