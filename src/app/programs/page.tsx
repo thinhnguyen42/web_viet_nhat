@@ -8,8 +8,8 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
-import { programs } from "@/data/programs";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { useSiteData } from "@/components/providers/SiteDataProvider";
 
 const filters = [
   { key: "all", labelKey: "all" as const },
@@ -21,6 +21,7 @@ const filters = [
 export default function ProgramsPage() {
   const [active, setActive] = useState("all");
   const { locale, t } = useLanguage();
+  const { programs, getProgramHref } = useSiteData();
   const filtered =
     active === "all" ? programs : programs.filter((p) => p.category === active);
 
@@ -145,7 +146,7 @@ export default function ProgramsPage() {
 
                   <div className="p-6 pt-0">
                     <Button
-                      href={`/programs/${program.slug}`}
+                      href={getProgramHref(program.slug)}
                       variant="outline"
                       size="sm"
                       className="w-full"

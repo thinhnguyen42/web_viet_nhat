@@ -4,12 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Container from "@/components/layout/Container";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { useSiteData } from "@/components/providers/SiteDataProvider";
 
-const stats = [
-  { value: 500, suffix: "+", labelKey: "students" as const },
-  { value: 20, suffix: "+", labelKey: "programs" as const },
-  { value: 10, suffix: "+", labelKey: "partners" as const },
-  { value: 15, suffix: "", labelKey: "years" as const },
+const baseStats = [
+  { key: "students", defaultValue: 500, suffix: "+", labelKey: "students" as const },
+  { key: "programs", defaultValue: 20, suffix: "+", labelKey: "programs" as const },
+  { key: "partners", defaultValue: 10, suffix: "+", labelKey: "partners" as const },
+  { key: "years", defaultValue: 15, suffix: "", labelKey: "years" as const },
 ];
 
 function useCountUp(target: number, duration = 1800) {
@@ -51,11 +52,10 @@ function StatItem({
   stat,
   index,
 }: {
-  stat: (typeof stats)[number];
+  stat: { value: number; suffix: string; label: string };
   index: number;
 }) {
   const { count, ref } = useCountUp(stat.value);
-  const { t } = useLanguage();
 
   return (
     <motion.div
@@ -71,14 +71,30 @@ function StatItem({
         {stat.suffix}
       </p>
       <p className="text-primary-100 text-sm font-semibold uppercase tracking-wider">
-        {t.stats[stat.labelKey]}
+        {stat.label}
       </p>
     </motion.div>
   );
 }
 
 export default function StatsCounter() {
-  const { t } = useLanguage();
+  const { locale, t } = useLanguage();
+  const { getConfigText } = useSiteData();
+
+  const resolvedStats = baseStats.map((item) => {
+    const rawVal = Number(
+      getConfigText(`stat_${item.key}_value`, locale, String(item.defaultValue))
+    );
+    return {
+      value: Number.isFinite(rawVal) && rawVal > 0 ? rawVal : item.defaultValue,
+      suffix: item.suffix,
+      label: getConfigText(
+        `stat_${item.key}_label`,
+        locale,
+        t.stats[item.labelKey]
+      ),
+    };
+  });
 
   return (
     <section className="section-padding bg-gradient-to-r from-primary-600 via-primary-700 to-primary-900 text-white relative overflow-hidden">
@@ -91,7 +107,7 @@ export default function StatsCounter() {
           <div className="w-16 h-1 bg-accent-400 rounded-full mx-auto" />
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {stats.map((stat, i) => (
+          {resolvedStats.map((stat, i) => (
             <StatItem key={i} stat={stat} index={i} />
           ))}
         </div>

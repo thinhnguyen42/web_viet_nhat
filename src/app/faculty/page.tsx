@@ -4,11 +4,12 @@ import { motion } from "framer-motion";
 import { GraduationCap, Award } from "lucide-react";
 import Container from "@/components/layout/Container";
 import SectionHeading from "@/components/ui/SectionHeading";
-import { facultyMembers } from "@/data/faculty";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { useSiteData } from "@/components/providers/SiteDataProvider";
 
 export default function FacultyPage() {
   const { locale, t } = useLanguage();
+  const { faculty } = useSiteData();
 
   return (
     <section className="section-padding bg-white">
@@ -19,7 +20,7 @@ export default function FacultyPage() {
         />
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {facultyMembers.map((member, i) => (
+          {faculty.map((member, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 20 }}

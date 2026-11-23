@@ -47,6 +47,17 @@ test.describe("Website Học Thuật & Trao Đổi Du Học Sinh Việt - Nhật
   });
 
   test("5. Form nộp hồ sơ / đăng ký xét tuyển trực tuyến hoạt động", async ({ page }) => {
+    await page.route("https://script.google.com/**", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          status: "success",
+          message: "Gửi thông tin đăng ký thành công!",
+        }),
+      });
+    });
+
     await page.goto("/admissions");
     // Điền form đăng ký
     await page.fill('input[name="fullName"]', "Trần Văn An");
@@ -60,5 +71,96 @@ test.describe("Website Học Thuật & Trao Đổi Du Học Sinh Việt - Nhật
 
     // Chờ thông báo thành công xuất hiện
     await expect(page.locator("body")).toContainText("Đăng ký thành công!");
+  });
+
+  test("6. Màn mở màn cổ điển Việt - Nhật hiển thị lần đầu, có thể bỏ qua và không lặp lại trong phiên", async ({ page }) => {
+    await page.goto("/");
+
+    const curtain = page.getByTestId("classical-curtain");
+    await expect(curtain).toBeVisible();
+    await expect(curtain).toContainText("日越");
+
+    await page.getByTestId("curtain-skip").click();
+    await expect(curtain).toHaveCount(0);
+
+    const seenFlag = await page.evaluate(() => sessionStorage.getItem("vnj_curtain_seen"));
+    expect(seenFlag).toBe("1");
+
+    await page.reload();
+    await expect(page.getByTestId("classical-curtain")).toHaveCount(0);
+  });
+
+  test("7. Các phần nội dung trang chủ lazy-load và hiển thị mượt mà khi cuộn trang", async ({ page }) => {
+    const errors: string[] = [];
+    page.on("pageerror", (err) => errors.push(err.message));
+
+    await page.addInitScript(() => {
+      sessionStorage.setItem("vnj_curtain_seen", "1");
+    });
+
+    await page.goto("/");
+    const sections = page.getByTestId("lazy-reveal");
+    await expect(sections.first()).toBeAttached();
+
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await expect(sections.last()).toHaveAttribute("data-revealed", "true");
+
+    const hasOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth > window.innerWidth
+    );
+    expect(hasOverflow).toBe(false);
+    expect(errors).toEqual([]);
+  });
+
+  test("8. Google Sheet CMS đồng bộ bài viết mới và mở chi tiết qua route dự phòng", async ({ page }) => {
+    await page.addInitScript(() => {
+      sessionStorage.setItem("vnj_curtain_seen", "1");
+    });
+
+    await page.route("https://script.google.com/**", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          status: "success",
+          action: "all",
+          data: {
+            config: [
+              {
+                key: "hero_title",
+                value_vi: "Trung Tâm Việt - Nhật (Dữ Liệu Google Sheet)",
+                value_ja: "",
+                value_en: "",
+              },
+            ],
+            programs: [],
+            news: [
+              {
+                id: "NEWS-SHEET-01",
+                slug: "su-kien-moi-tu-google-sheet",
+                category: "announcement",
+                date: "2026-11-23",
+                featured: true,
+                title_vi: "Thông báo mới cập nhật trực tiếp từ Google Sheet",
+                excerpt_vi: "Nội dung tóm tắt đồng bộ thời gian thực.",
+                content_vi: "Đoạn nội dung chi tiết 1 từ Google Sheet.\nĐoạn nội dung chi tiết 2 từ Google Sheet.",
+                status: true,
+              },
+            ],
+            faculty: [],
+          },
+        }),
+      });
+    });
+
+    await page.goto("/");
+    await expect(page.locator("h1")).toContainText("Trung Tâm Việt - Nhật (Dữ Liệu Google Sheet)");
+
+    await page.goto("/news");
+    await expect(page.locator("body")).toContainText("Thông báo mới cập nhật trực tiếp từ Google Sheet");
+
+    await page.click('a:has-text("Xem thêm")');
+    await expect(page.locator("h1")).toContainText("Thông báo mới cập nhật trực tiếp từ Google Sheet");
+    await expect(page.locator("body")).toContainText("Đoạn nội dung chi tiết 2 từ Google Sheet.");
   });
 });

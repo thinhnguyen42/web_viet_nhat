@@ -7,9 +7,17 @@ export interface Program {
   description: string;
   descriptionEn: string;
   descriptionJa?: string;
+  overview?: string;
+  overviewEn?: string;
+  overviewJa?: string;
+  requirement?: string;
+  requirementEn?: string;
+  requirementJa?: string;
   duration: string;
   image: string;
   features: string[];
+  status?: boolean;
+  order?: number;
 }
 
 export const programs: Program[] = [

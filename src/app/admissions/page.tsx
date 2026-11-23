@@ -8,8 +8,8 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import Button from "@/components/ui/Button";
-import { programs } from "@/data/programs";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { useSiteData } from "@/components/providers/SiteDataProvider";
 
 const timelineSteps = [
   {
@@ -61,6 +61,7 @@ import { submitApplication } from "@/lib/appsScriptApi";
 
 export default function AdmissionsPage() {
   const { locale, t } = useLanguage();
+  const { programs } = useSiteData();
   const [form, setForm] = useState({
     fullName: "",
     email: "",

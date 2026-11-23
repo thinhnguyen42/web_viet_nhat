@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Inter, Be_Vietnam_Pro } from "next/font/google";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import ClassicalCurtain from "@/components/ui/ClassicalCurtain";
 import { LanguageProvider } from "@/components/providers/LanguageProvider";
+import { SiteDataProvider } from "@/components/providers/SiteDataProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -40,9 +42,12 @@ export default function RootLayout({
     >
       <body className="font-body min-h-screen flex flex-col bg-white text-neutral-900 antialiased">
         <LanguageProvider>
-          <Header />
-          <main className="flex-1 pt-16 md:pt-20">{children}</main>
-          <Footer />
+          <SiteDataProvider>
+            <ClassicalCurtain />
+            <Header />
+            <main className="flex-1 pt-16 md:pt-20">{children}</main>
+            <Footer />
+          </SiteDataProvider>
         </LanguageProvider>
       </body>
     </html>

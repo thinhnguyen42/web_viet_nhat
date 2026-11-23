@@ -5,10 +5,18 @@ import { Phone, Mail, MapPin } from "lucide-react";
 import Container from "./Container";
 import { siteConfig, navItems } from "@/data/site";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { useSiteData } from "@/components/providers/SiteDataProvider";
 import { FacebookIcon, YoutubeIcon } from "@/components/ui/SocialIcons";
 
 export default function Footer() {
-  const { t } = useLanguage();
+  const { locale, t } = useLanguage();
+  const { getConfigText } = useSiteData();
+
+  const address = getConfigText("contact_address", locale, siteConfig.address);
+  const phone = getConfigText("contact_phone", locale, siteConfig.phone);
+  const email = getConfigText("contact_email", locale, siteConfig.email);
+  const facebook = getConfigText("social_facebook", locale, siteConfig.social.facebook);
+  const youtube = getConfigText("social_youtube", locale, siteConfig.social.youtube);
 
   return (
     <footer className="bg-primary-900 text-white mt-auto">
@@ -32,7 +40,7 @@ export default function Footer() {
             </p>
             <div className="flex gap-3">
               <a
-                href={siteConfig.social.facebook}
+                href={facebook}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-lg bg-primary-800 flex items-center justify-center hover:bg-primary-700 transition-colors"
@@ -41,7 +49,7 @@ export default function Footer() {
                 <FacebookIcon className="w-4 h-4" />
               </a>
               <a
-                href={siteConfig.social.youtube}
+                href={youtube}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-lg bg-primary-800 flex items-center justify-center hover:bg-primary-700 transition-colors"
@@ -112,15 +120,15 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex gap-3 text-sm text-primary-200">
                 <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
-                <span>{siteConfig.address}</span>
+                <span>{address}</span>
               </li>
               <li className="flex gap-3 text-sm text-primary-200">
                 <Phone className="w-4 h-4 mt-0.5 shrink-0" />
-                <span>{siteConfig.phone}</span>
+                <span>{phone}</span>
               </li>
               <li className="flex gap-3 text-sm text-primary-200">
                 <Mail className="w-4 h-4 mt-0.5 shrink-0" />
-                <span>{siteConfig.email}</span>
+                <span>{email}</span>
               </li>
             </ul>
           </div>

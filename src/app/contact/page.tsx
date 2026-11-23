@@ -9,10 +9,13 @@ import Textarea from "@/components/ui/Textarea";
 import Button from "@/components/ui/Button";
 import { siteConfig } from "@/data/site";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { useSiteData } from "@/components/providers/SiteDataProvider";
 import { FacebookIcon, YoutubeIcon } from "@/components/ui/SocialIcons";
+import { submitContact } from "@/lib/appsScriptApi";
 
 export default function ContactPage() {
-  const { t } = useLanguage();
+  const { locale, t } = useLanguage();
+  const { getConfigText } = useSiteData();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -20,6 +23,29 @@ export default function ContactPage() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+
+  const address = getConfigText("contact_address", locale, siteConfig.address);
+  const phone = getConfigText("contact_phone", locale, siteConfig.phone);
+  const email = getConfigText("contact_email", locale, siteConfig.email);
+  const officeHours = getConfigText(
+    "contact_hours",
+    locale,
+    t.contact.officeHoursValue
+  );
+  const facebook = getConfigText(
+    "social_facebook",
+    locale,
+    siteConfig.social.facebook
+  );
+  const youtube = getConfigText(
+    "social_youtube",
+    locale,
+    siteConfig.social.youtube
+  );
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -27,14 +53,26 @@ export default function ContactPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
-    setTimeout(() => {
-      alert("Tin nhắn của bạn đã được gửi thành công!");
-      setSubmitted(false);
+    setStatusMessage(null);
+
+    const res = await submitContact(form);
+    setSubmitted(false);
+
+    if (res.success) {
+      setStatusMessage({
+        type: "success",
+        text: "Tin nhắn của bạn đã được gửi thành công! Bộ phận hợp tác quốc tế sẽ phản hồi trong thời gian sớm nhất.",
+      });
       setForm({ name: "", email: "", subject: "", message: "" });
-    }, 400);
+    } else {
+      setStatusMessage({
+        type: "error",
+        text: res.message || "Không thể gửi tin nhắn. Vui lòng thử lại sau.",
+      });
+    }
   };
 
   return (
@@ -52,6 +90,19 @@ export default function ContactPage() {
               <h3 className="font-heading text-2xl font-bold mb-6 text-neutral-900">
                 {t.contact.formTitle}
               </h3>
+
+              {statusMessage && (
+                <div
+                  className={`mb-6 p-4 rounded-xl text-sm font-medium ${
+                    statusMessage.type === "success"
+                      ? "bg-green-50 text-green-800 border border-green-200"
+                      : "bg-red-50 text-red-800 border border-red-200"
+                  }`}
+                >
+                  {statusMessage.text}
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Input
@@ -112,22 +163,22 @@ export default function ContactPage() {
                   {
                     icon: MapPin,
                     label: t.contact.address,
-                    value: siteConfig.address,
+                    value: address,
                   },
                   {
                     icon: Phone,
                     label: t.contact.phone,
-                    value: siteConfig.phone,
+                    value: phone,
                   },
                   {
                     icon: Mail,
                     label: "Email",
-                    value: siteConfig.email,
+                    value: email,
                   },
                   {
                     icon: Clock,
                     label: t.contact.officeHours,
-                    value: t.contact.officeHoursValue,
+                    value: officeHours,
                   },
                 ].map((item, i) => (
                   <div key={i} className="flex gap-4">
@@ -152,7 +203,7 @@ export default function ContactPage() {
                 </span>
                 <div className="flex gap-2">
                   <a
-                    href={siteConfig.social.facebook}
+                    href={facebook}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-9 h-9 rounded-xl bg-primary-50 flex items-center justify-center text-primary-600 hover:bg-primary-500 hover:text-white transition-colors"
@@ -161,7 +212,7 @@ export default function ContactPage() {
                     <FacebookIcon className="w-4 h-4" />
                   </a>
                   <a
-                    href={siteConfig.social.youtube}
+                    href={youtube}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-9 h-9 rounded-xl bg-primary-50 flex items-center justify-center text-primary-600 hover:bg-primary-500 hover:text-white transition-colors"

@@ -52,6 +52,82 @@ h1, h2, h3, h4, h5, h6 {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+
+  .lazy-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Classical Vietnam-Japan Lazy Loading & Curtain Animations (GPU-only) */
+@keyframes curtain-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes hanko-stamp {
+  0% {
+    opacity: 0;
+    transform: scale(1.18) rotate(-5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(-2deg);
+  }
+}
+
+@keyframes curtain-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes classical-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.curtain-stroke {
+  stroke-dasharray: 220;
+  stroke-dashoffset: 220;
+  animation: curtain-draw 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.curtain-hanko {
+  opacity: 0;
+  animation: hanko-stamp 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.25s forwards;
+}
+
+.curtain-progress-bar {
+  transform-origin: left center;
+  animation: curtain-progress 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.classical-shimmer-bar {
+  animation: classical-shimmer 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform;
+}
+
+.lazy-reveal {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.lazy-reveal[data-revealed="true"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
 }
 
 .section-padding {

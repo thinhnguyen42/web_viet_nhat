@@ -4,9 +4,15 @@ import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 import Container from "@/components/layout/Container";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { useSiteData } from "@/components/providers/SiteDataProvider";
 
 export default function CTABanner() {
-  const { t } = useLanguage();
+  const { locale, t } = useLanguage();
+  const { getConfigText } = useSiteData();
+
+  const title = getConfigText("cta_title", locale, t.sections.cta);
+  const subtitle = getConfigText("cta_subtitle", locale, t.sections.ctaSub);
+  const buttonLabel = getConfigText("cta_button", locale, t.sections.ctaButton);
 
   return (
     <section className="section-padding bg-gradient-to-r from-primary-600 via-primary-700 to-primary-900 text-white relative overflow-hidden">
@@ -21,13 +27,13 @@ export default function CTABanner() {
           viewport={{ once: true }}
         >
           <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">
-            {t.sections.cta}
+            {title}
           </h2>
           <p className="text-primary-100 text-base sm:text-lg mb-8 leading-relaxed">
-            {t.sections.ctaSub}
+            {subtitle}
           </p>
           <Button href="/admissions" variant="secondary" size="lg">
-            {t.sections.ctaButton}
+            {buttonLabel}
           </Button>
         </motion.div>
       </Container>

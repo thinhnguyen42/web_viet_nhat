@@ -7,12 +7,13 @@ import Container from "@/components/layout/Container";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
-import { newsArticles } from "@/data/news";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { useSiteData } from "@/components/providers/SiteDataProvider";
 
 export default function LatestNews() {
   const { locale, t } = useLanguage();
-  const latest = newsArticles.slice(0, 3);
+  const { news, getNewsHref } = useSiteData();
+  const latest = news.slice(0, 3);
 
   return (
     <section className="section-padding bg-neutral-50/60">
@@ -53,7 +54,7 @@ export default function LatestNews() {
                 </div>
                 <div className="p-6 pt-0">
                   <Link
-                    href={`/news/${article.slug}`}
+                    href={getNewsHref(article.slug)}
                     className="text-primary-600 hover:text-primary-800 text-sm font-semibold inline-flex items-center gap-1.5 hover:gap-2.5 transition-all"
                   >
                     {t.news.readMore} <ArrowRight className="w-4 h-4" />

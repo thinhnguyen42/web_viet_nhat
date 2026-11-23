@@ -4,9 +4,17 @@ import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 import Container from "@/components/layout/Container";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { useSiteData } from "@/components/providers/SiteDataProvider";
 
 export default function HeroSection() {
-  const { t } = useLanguage();
+  const { locale, t } = useLanguage();
+  const { getConfigText } = useSiteData();
+
+  const badge = getConfigText("hero_badge", locale, "Đại học Mở TP.HCM");
+  const title = getConfigText("hero_title", locale, t.hero.title);
+  const subtitle = getConfigText("hero_subtitle", locale, t.hero.subtitle);
+  const cta1 = getConfigText("hero_cta1", locale, t.hero.cta1);
+  const cta2 = getConfigText("hero_cta2", locale, t.hero.cta2);
 
   return (
     <section className="relative min-h-[85vh] flex items-center bg-gradient-to-br from-primary-50/70 via-white to-accent-50/50 overflow-hidden py-12 md:py-20">
@@ -25,20 +33,20 @@ export default function HeroSection() {
           >
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-100/80 text-primary-800 text-xs sm:text-sm font-semibold mb-6 border border-primary-200/50">
               <span className="w-2 h-2 rounded-full bg-primary-600 animate-pulse" />
-              Đại học Mở TP.HCM
+              {badge}
             </div>
             <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-extrabold text-primary-900 leading-[1.15] mb-6 tracking-tight">
-              {t.hero.title}
+              {title}
             </h1>
             <p className="text-base sm:text-lg text-neutral-600 mb-8 leading-relaxed max-w-xl">
-              {t.hero.subtitle}
+              {subtitle}
             </p>
             <div className="flex flex-wrap gap-4">
               <Button href="/programs" size="lg">
-                {t.hero.cta1}
+                {cta1}
               </Button>
               <Button href="/contact" variant="outline" size="lg">
-                {t.hero.cta2}
+                {cta2}
               </Button>
             </div>
           </motion.div>

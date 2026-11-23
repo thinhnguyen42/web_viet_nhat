@@ -13,6 +13,7 @@ export interface NewsArticle {
   date: string;
   image: string;
   featured: boolean;
+  status?: boolean;
 }
 
 export const newsArticles: NewsArticle[] = [
