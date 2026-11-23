@@ -50,20 +50,26 @@ export default function AboutPage() {
     <section className="section-padding bg-white">
       <Container>
         <SectionHeading
-          title={t.about.title}
-          subtitle={
+          title={getConfigText("tieu_de_chinh", locale, t.about.title)}
+          subtitle={getConfigText(
+            "phu_de",
+            locale,
             locale === "vi"
               ? "Cầu nối học thuật, nghiên cứu khoa học và phát triển nguồn nhân lực chất lượng cao giữa Việt Nam và Nhật Bản."
               : locale === "ja"
               ? "ベトナムと日本の学術研究協力および高度人材育成をつなぐ公式プラットフォーム。"
               : "Bridging academic research, higher education, and talent development between Vietnam and Japan."
-          }
+          )}
         />
 
         {/* Intro */}
         <div className="max-w-3xl mx-auto mb-16 text-center">
           <p className="text-lg text-neutral-700 leading-relaxed">
-            {getConfigText("about_intro", locale, introDefault)}
+            {getConfigText(
+              "mo_ta_chinh",
+              locale,
+              getConfigText("about_intro", locale, introDefault)
+            )}
           </p>
         </div>
 
@@ -72,13 +78,21 @@ export default function AboutPage() {
           {[
             {
               icon: Target,
-              title: t.about.mission,
-              text: getConfigText("about_mission", locale, missionDefault),
+              title: getConfigText("su_menh_tieu_de", locale, t.about.mission),
+              text: getConfigText(
+                "su_menh_mo_ta",
+                locale,
+                getConfigText("about_mission", locale, missionDefault)
+              ),
             },
             {
               icon: Eye,
-              title: t.about.vision,
-              text: getConfigText("about_vision", locale, visionDefault),
+              title: getConfigText("tam_nhin_tieu_de", locale, t.about.vision),
+              text: getConfigText(
+                "tam_nhin_mo_ta",
+                locale,
+                getConfigText("about_vision", locale, visionDefault)
+              ),
             },
           ].map((item, i) => (
             <motion.div
@@ -145,11 +159,23 @@ export default function AboutPage() {
             <BookOpen className="w-7 h-7 text-primary-600" />
           </div>
           <h3 className="font-heading text-2xl md:text-3xl font-bold mb-4 text-neutral-900">
-            {t.about.history}
+            {getConfigText("lich_su_tieu_de", locale, t.about.history)}
           </h3>
           <div className="text-neutral-700 leading-relaxed space-y-4 text-base">
-            <p>{getConfigText("about_history_1", locale, history1Default)}</p>
-            <p>{getConfigText("about_history_2", locale, history2Default)}</p>
+            <p>
+              {getConfigText(
+                "lich_su_1",
+                locale,
+                getConfigText("about_history_1", locale, history1Default)
+              )}
+            </p>
+            <p>
+              {getConfigText(
+                "lich_su_2",
+                locale,
+                getConfigText("about_history_2", locale, history2Default)
+              )}
+            </p>
           </div>
         </motion.div>
       </Container>

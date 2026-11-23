@@ -20,6 +20,7 @@ Tài liệu kỹ thuật và nhật ký các phiên làm việc (work sessions) 
 - [2026-11-23-session-03-github-push-and-azure-check.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-03-github-push-and-azure-check.md) — Phiên 03: Kiểm tra tài nguyên Azure VM (`ZaloOaBot`) từ `pm2 list` và đẩy toàn bộ mã nguồn lên `https://github.com/thinhnguyen42/web_viet_nhat.git` (nhánh `main`).
 - [2026-11-23-session-04-sheet-doGet-alignment.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-04-sheet-doGet-alignment.md) — Phiên 04: Chuẩn hóa Apps Script theo `?sheet=` + 8 tab thân thiện (`home`, `about`, `programs`, `news`, `faculty`, `partners`, `admissions`, `contact`) gắn ID Sheet `1v-WuSh5M3V1az6970Y8sP6OhOUoAeTYhHy6MS73zVRU`.
 - [2026-11-23-session-05-demowebou-webvn-branch.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-05-demowebou-webvn-branch.md) — Phiên 05: Đặt `https://github.com/Smart-Home-SH/demowebou.git` làm `origin` (`main` giữ nguyên theo `origin/main`) và đẩy dự án `Web_Viet_Nhat` lên nhánh phụ `webvn`.
+- [2026-11-23-session-06-webviethann-live-sheet-inheritance.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-06-webviethann-live-sheet-inheritance.md) — Phiên 06: Kế thừa Apps Script `webviethann` (`?sheet=<tab>` không cache, `cache: "no-store"`, hỗ trợ đủ cột tiếng Việt `about`/`faculty`), sửa Google Sheet thấy ngay không cần mở Apps Script.
 
 ## Quy tắc cập nhật tài liệu
 

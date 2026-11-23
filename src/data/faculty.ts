@@ -10,6 +10,9 @@ export interface FacultyMember {
   bioJa?: string;
   image: string;
   specialization: string;
+  specializationEn?: string;
+  unit?: string;
+  unitEn?: string;
 }
 
 export const facultyMembers: FacultyMember[] = [

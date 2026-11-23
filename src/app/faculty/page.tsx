@@ -44,7 +44,11 @@ export default function FacultyPage() {
 
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-neutral-200 rounded-full text-xs text-neutral-700 font-medium mb-4">
                   <GraduationCap className="w-3.5 h-3.5 text-accent-500" />
-                  <span>{member.specialization}</span>
+                  <span>
+                    {locale === "en"
+                      ? member.specializationEn || member.specialization
+                      : member.specialization}
+                  </span>
                 </div>
 
                 <p className="text-neutral-600 text-sm leading-relaxed mb-6">
@@ -54,7 +58,11 @@ export default function FacultyPage() {
 
               <div className="pt-4 border-t border-neutral-200/60 flex items-center justify-center gap-2 text-xs text-neutral-500 font-medium">
                 <Award className="w-4 h-4 text-primary-500" />
-                <span>Giảng viên cơ hữu HCMCOU</span>
+                <span>
+                  {locale === "en"
+                    ? member.unitEn || member.unit || "HCMCOU Faculty"
+                    : member.unit || "Giảng viên cơ hữu HCMCOU"}
+                </span>
               </div>
             </motion.div>
           ))}

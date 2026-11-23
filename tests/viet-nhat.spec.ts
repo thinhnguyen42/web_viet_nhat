@@ -118,46 +118,48 @@ test.describe("Website Học Thuật & Trao Đổi Du Học Sinh Việt - Nhật
     });
 
     await page.route("https://script.google.com/**", async (route) => {
+      const reqUrl = new URL(route.request().url());
+      const sheet = reqUrl.searchParams.get("sheet");
+
+      const mockBySheet: Record<string, unknown> = {
+        home: [
+          {
+            key: "main_title",
+            vi: "Trung Tâm Việt - Nhật (Dữ Liệu Google Sheet)",
+            ja: "",
+            en: "",
+          },
+        ],
+        about: [],
+        programs: [],
+        news: [
+          {
+            slug: "su-kien-moi-tu-google-sheet",
+            category: "announcement",
+            date: "2026-11-23",
+            featured: true,
+            title: "Thông báo mới cập nhật trực tiếp từ Google Sheet",
+            excerpt: "Nội dung tóm tắt đồng bộ thời gian thực.",
+            content:
+              "Đoạn nội dung chi tiết 1 từ Google Sheet.\nĐoạn nội dung chi tiết 2 từ Google Sheet.",
+            status: true,
+          },
+        ],
+        faculty: [],
+        partners: [
+          {
+            name: "Keio University",
+            country: "🇯🇵 Tokyo, Nhật Bản",
+            status: true,
+            order: 1,
+          },
+        ],
+      };
+
       await route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({
-          status: "success",
-          action: "all",
-          data: {
-            home: [
-              {
-                key: "main_title",
-                vi: "Trung Tâm Việt - Nhật (Dữ Liệu Google Sheet)",
-                ja: "",
-                en: "",
-              },
-            ],
-            about: [],
-            programs: [],
-            news: [
-              {
-                slug: "su-kien-moi-tu-google-sheet",
-                category: "announcement",
-                date: "2026-11-23",
-                featured: true,
-                title: "Thông báo mới cập nhật trực tiếp từ Google Sheet",
-                excerpt: "Nội dung tóm tắt đồng bộ thời gian thực.",
-                content: "Đoạn nội dung chi tiết 1 từ Google Sheet.\nĐoạn nội dung chi tiết 2 từ Google Sheet.",
-                status: true,
-              },
-            ],
-            faculty: [],
-            partners: [
-              {
-                name: "Keio University",
-                country: "🇯🇵 Tokyo, Nhật Bản",
-                status: true,
-                order: 1,
-              },
-            ],
-          },
-        }),
+        body: JSON.stringify(mockBySheet[sheet || "programs"] ?? []),
       });
     });
 

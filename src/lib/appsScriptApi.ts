@@ -4,9 +4,9 @@ import type { FacultyMember } from "@/data/faculty";
 
 /**
  * Google Apps Script API Client
- * Tương thích cả 2 kiểu API:
- *   - ?sheet=all / ?action=all (trả { status, data: { home, about, programs, news, faculty, partners } })
- *   - ?sheet=home | about | programs | news | faculty | partners (trả mảng JSON trực tiếp)
+ * Kế thừa kiến trúc ?sheet=<tab> trực tiếp từ webviethann:
+ *   - Fetch trực tiếp không qua cache (cache: "no-store") => Sửa trên Google Sheet là web cập nhật ngay khi F5!
+ *   - Tương thích cả 2 kiểu cột: Tiếng Anh/key ngắn (home, programs, news) lẫn Tiếng Việt chuẩn (webviethann: about, faculty).
  */
 
 const APPS_SCRIPT_URL = process.env.NEXT_PUBLIC_APPS_SCRIPT_URL || "";
@@ -45,9 +45,13 @@ export interface PartnerItem {
 
 export interface SheetConfigRow {
   key?: string;
+  "Mã nội dung"?: string;
   vi?: string;
   ja?: string;
   en?: string;
+  "Tiếng Việt"?: string;
+  "Tiếng Nhật"?: string;
+  "Tiếng Anh"?: string;
   value_vi?: string;
   value_ja?: string;
   value_en?: string;
@@ -117,6 +121,7 @@ export interface SheetNewsRow {
 }
 
 export interface SheetFacultyRow {
+  ID?: number | string;
   id?: string;
   name?: string;
   name_vi?: string;
@@ -124,21 +129,35 @@ export interface SheetFacultyRow {
   name_ja?: string;
   nameEn?: string;
   name_en?: string;
+  "Tên"?: string;
+  "Tên JA"?: string;
+  "Tên EN"?: string;
   title?: string;
   title_vi?: string;
   titleJa?: string;
   title_ja?: string;
   titleEn?: string;
   title_en?: string;
+  "Chức vụ VI"?: string;
+  "Chức vụ JA"?: string;
+  "Chức vụ EN"?: string;
   specialization?: string;
+  "Chuyên môn VI"?: string;
+  "Chuyên môn EN"?: string;
   bio?: string;
   bio_vi?: string;
   bioJa?: string;
   bio_ja?: string;
   bioEn?: string;
   bio_en?: string;
+  "Mô tả VI"?: string;
+  "Mô tả JA"?: string;
+  "Mô tả EN"?: string;
+  "Đơn vị VI"?: string;
+  "Đơn vị EN"?: string;
   image?: string;
   status?: boolean | string;
+  "Hiển thị"?: boolean | string;
   order?: number | string;
 }
 
@@ -157,21 +176,6 @@ export interface SheetSiteData {
   news: NewsArticle[];
   faculty: (FacultyMember & { order?: number })[];
   partners: PartnerItem[];
-  updatedAt?: string;
-}
-
-interface AppsScriptAllResponse {
-  status: string;
-  updatedAt?: string;
-  data?: {
-    home?: SheetConfigRow[];
-    about?: SheetConfigRow[];
-    config?: SheetConfigRow[];
-    programs?: SheetProgramRow[];
-    news?: SheetNewsRow[];
-    faculty?: SheetFacultyRow[];
-    partners?: SheetPartnerRow[];
-  };
 }
 
 interface AppsScriptPostResponse {
@@ -240,13 +244,13 @@ function parseFeatures(raw?: string | string[]): string[] {
 export function normalizeConfigFromSheet(rows: SheetConfigRow[]): SiteConfigOverrides {
   const map: SiteConfigOverrides = {};
   for (const row of rows) {
-    const key = String(row.key || "").trim();
-    const vi = String(row.vi ?? row.value_vi ?? "").trim();
+    const key = String(row.key || row["Mã nội dung"] || "").trim();
+    const vi = String(row.vi ?? row["Tiếng Việt"] ?? row.value_vi ?? "").trim();
     if (!key || !vi) continue;
     map[key] = {
       vi,
-      ja: String(row.ja ?? row.value_ja ?? "").trim() || undefined,
-      en: String(row.en ?? row.value_en ?? "").trim() || undefined,
+      ja: String(row.ja ?? row["Tiếng Nhật"] ?? row.value_ja ?? "").trim() || undefined,
+      en: String(row.en ?? row["Tiếng Anh"] ?? row.value_en ?? "").trim() || undefined,
     };
   }
   return map;
@@ -331,25 +335,34 @@ export function normalizeFacultyFromSheet(
   rows: SheetFacultyRow[]
 ): (FacultyMember & { order?: number })[] {
   return rows
-    .filter((row) => isRowEnabled(row.status))
+    .filter((row) =>
+      row["Hiển thị"] !== undefined
+        ? isRowEnabled(row["Hiển thị"])
+        : isRowEnabled(row.status)
+    )
     .map((row) => {
-      const nameVi = String(row.name_vi || row.name || "").trim();
-      const titleVi = String(row.title_vi || row.title || "").trim();
-      const bioVi = String(row.bio_vi || row.bio || "").trim();
+      const nameVi = String(row["Tên"] || row.name_vi || row.name || "").trim();
+      const titleVi = String(row["Chức vụ VI"] || row.title_vi || row.title || "").trim();
+      const bioVi = String(row["Mô tả VI"] || row.bio_vi || row.bio || "").trim();
+      const specVi = String(row["Chuyên môn VI"] || row.specialization || "").trim();
+      const specEn = String(row["Chuyên môn EN"] || "").trim() || specVi;
 
       return {
         name: nameVi,
-        nameEn: String(row.nameEn || row.name_en || "").trim() || nameVi,
-        nameJa: String(row.nameJa || row.name_ja || "").trim() || nameVi,
+        nameEn: String(row["Tên EN"] || row.nameEn || row.name_en || "").trim() || nameVi,
+        nameJa: String(row["Tên JA"] || row.nameJa || row.name_ja || "").trim() || nameVi,
         title: titleVi,
-        titleEn: String(row.titleEn || row.title_en || "").trim() || titleVi,
-        titleJa: String(row.titleJa || row.title_ja || "").trim() || titleVi,
-        specialization: String(row.specialization || "").trim(),
+        titleEn: String(row["Chức vụ EN"] || row.titleEn || row.title_en || "").trim() || titleVi,
+        titleJa: String(row["Chức vụ JA"] || row.titleJa || row.title_ja || "").trim() || titleVi,
+        specialization: specVi,
+        specializationEn: specEn,
         bio: bioVi,
-        bioEn: String(row.bioEn || row.bio_en || "").trim() || bioVi,
-        bioJa: String(row.bioJa || row.bio_ja || "").trim() || bioVi,
+        bioEn: String(row["Mô tả EN"] || row.bioEn || row.bio_en || "").trim() || bioVi,
+        bioJa: String(row["Mô tả JA"] || row.bioJa || row.bio_ja || "").trim() || bioVi,
+        unit: String(row["Đơn vị VI"] || "").trim() || undefined,
+        unitEn: String(row["Đơn vị EN"] || "").trim() || undefined,
         image: String(row.image || "/images/placeholder/faculty-1.jpg").trim(),
-        order: toNumber(row.order),
+        order: toNumber(row.order ?? row.ID),
       };
     })
     .filter((m) => Boolean(m.name && m.title))
@@ -394,36 +407,68 @@ function isAppsScriptConfigured(): boolean {
 }
 
 /**
- * Tải toàn bộ dữ liệu CMS (home, about, programs, news, faculty, partners) trong 1 request.
+ * Gọi từng tab theo đúng chuẩn ?sheet=<tab> của webviethann (cache: "no-store").
+ * Nếu tab chưa được tạo trên Google Sheet ({ error: ... }), tự bỏ qua an toàn.
  */
-export async function fetchAllSiteData(
-  forceRefresh = false
-): Promise<SheetSiteData | null> {
+async function fetchSheetTab<T>(tabName: string): Promise<T[]> {
+  try {
+    const separator = APPS_SCRIPT_URL.includes("?") ? "&" : "?";
+    const res = await fetchWithTimeout(
+      `${APPS_SCRIPT_URL}${separator}sheet=${encodeURIComponent(tabName)}`,
+      { cache: "no-store" }
+    );
+    if (!res.ok) return [];
+
+    const json: unknown = await res.json();
+    if (Array.isArray(json)) return json as T[];
+    if (
+      json &&
+      typeof json === "object" &&
+      "data" in json &&
+      Array.isArray((json as { data: unknown }).data)
+    ) {
+      return (json as { data: T[] }).data;
+    }
+    return [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Tải song song toàn bộ các tab trực tiếp từ Google Sheet (không cache cũ).
+ * Cho phép chỉnh sửa Google Sheet và F5 website thấy ngay lập tức, không cần mở Apps Script.
+ */
+export async function fetchAllSiteData(): Promise<SheetSiteData | null> {
   if (!isAppsScriptConfigured()) return null;
 
   try {
-    const query = forceRefresh ? "sheet=all&nocache=1" : "sheet=all";
-    const separator = APPS_SCRIPT_URL.includes("?") ? "&" : "?";
-    const res = await fetchWithTimeout(`${APPS_SCRIPT_URL}${separator}${query}`);
-    if (!res.ok) return null;
+    const [homeRows, aboutRows, programRows, newsRows, facultyRows, partnerRows] =
+      await Promise.all([
+        fetchSheetTab<SheetConfigRow>("home"),
+        fetchSheetTab<SheetConfigRow>("about"),
+        fetchSheetTab<SheetProgramRow>("programs"),
+        fetchSheetTab<SheetNewsRow>("news"),
+        fetchSheetTab<SheetFacultyRow>("faculty"),
+        fetchSheetTab<SheetPartnerRow>("partners"),
+      ]);
 
-    const json = (await res.json()) as AppsScriptAllResponse;
-    if (json.status !== "success" || !json.data) return null;
+    const config = normalizeConfigFromSheet([...homeRows, ...aboutRows]);
+    const programs = normalizeProgramsFromSheet(programRows);
+    const news = normalizeNewsFromSheet(newsRows);
+    const faculty = normalizeFacultyFromSheet(facultyRows);
+    const partners = normalizePartnersFromSheet(partnerRows);
 
-    const mergedConfigRows = [
-      ...(json.data.config || []),
-      ...(json.data.home || []),
-      ...(json.data.about || []),
-    ];
+    const hasAnyData =
+      Object.keys(config).length > 0 ||
+      programs.length > 0 ||
+      news.length > 0 ||
+      faculty.length > 0 ||
+      partners.length > 0;
 
-    return {
-      config: normalizeConfigFromSheet(mergedConfigRows),
-      programs: normalizeProgramsFromSheet(json.data.programs || []),
-      news: normalizeNewsFromSheet(json.data.news || []),
-      faculty: normalizeFacultyFromSheet(json.data.faculty || []),
-      partners: normalizePartnersFromSheet(json.data.partners || []),
-      updatedAt: json.updatedAt,
-    };
+    if (!hasAnyData) return null;
+
+    return { config, programs, news, faculty, partners };
   } catch (err) {
     console.error("Không thể tải dữ liệu từ Google Sheet:", err);
     return null;
