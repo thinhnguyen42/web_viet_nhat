@@ -80,6 +80,7 @@ function StatItem({
 export default function StatsCounter() {
   const { locale, t } = useLanguage();
   const { getConfigText } = useSiteData();
+  const sectionTitle = getConfigText("section_stats_title", locale, t.sections.stats);
 
   const resolvedStats = baseStats.map((item) => {
     const rawVal = Number(
@@ -102,7 +103,7 @@ export default function StatsCounter() {
       <Container className="relative z-10">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <h2 className="font-heading text-3xl md:text-4xl font-bold tracking-tight mb-3 text-white">
-            {t.sections.stats}
+            {sectionTitle}
           </h2>
           <div className="w-16 h-1 bg-accent-400 rounded-full mx-auto" />
         </div>

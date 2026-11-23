@@ -4,7 +4,9 @@ import type { FacultyMember } from "@/data/faculty";
 
 /**
  * Google Apps Script API Client
- * Hỗ trợ CMS đa ngôn ngữ (VI - JA - EN) từ 6 tab Google Sheet với cơ chế fallback an toàn khi offline.
+ * Tương thích cả 2 kiểu API:
+ *   - ?sheet=all / ?action=all (trả { status, data: { home, about, programs, news, faculty, partners } })
+ *   - ?sheet=home | about | programs | news | faculty | partners (trả mảng JSON trực tiếp)
  */
 
 const APPS_SCRIPT_URL = process.env.NEXT_PUBLIC_APPS_SCRIPT_URL || "";
@@ -34,8 +36,18 @@ export interface LocalizedConfigEntry {
 
 export type SiteConfigOverrides = Record<string, LocalizedConfigEntry>;
 
+export interface PartnerItem {
+  name: string;
+  country: string;
+  countryJa?: string;
+  countryEn?: string;
+}
+
 export interface SheetConfigRow {
   key?: string;
+  vi?: string;
+  ja?: string;
+  en?: string;
   value_vi?: string;
   value_ja?: string;
   value_en?: string;
@@ -47,20 +59,30 @@ export interface SheetProgramRow {
   category?: string;
   title?: string;
   title_vi?: string;
+  titleJa?: string;
   title_ja?: string;
+  titleEn?: string;
   title_en?: string;
   description?: string;
   description_vi?: string;
+  descriptionJa?: string;
   description_ja?: string;
+  descriptionEn?: string;
   description_en?: string;
+  overview?: string;
   overview_vi?: string;
+  overviewJa?: string;
   overview_ja?: string;
+  overviewEn?: string;
   overview_en?: string;
+  requirement?: string;
   requirement_vi?: string;
+  requirementJa?: string;
   requirement_ja?: string;
+  requirementEn?: string;
   requirement_en?: string;
   duration?: string;
-  features?: string;
+  features?: string | string[];
   image?: string;
   status?: boolean | string;
   order?: number | string;
@@ -74,15 +96,21 @@ export interface SheetNewsRow {
   featured?: boolean | string;
   title?: string;
   title_vi?: string;
+  titleJa?: string;
   title_ja?: string;
+  titleEn?: string;
   title_en?: string;
   excerpt?: string;
   excerpt_vi?: string;
+  excerptJa?: string;
   excerpt_ja?: string;
+  excerptEn?: string;
   excerpt_en?: string;
   content?: string;
   content_vi?: string;
+  contentJa?: string;
   content_ja?: string;
+  contentEn?: string;
   content_en?: string;
   image?: string;
   status?: boolean | string;
@@ -92,18 +120,33 @@ export interface SheetFacultyRow {
   id?: string;
   name?: string;
   name_vi?: string;
+  nameJa?: string;
   name_ja?: string;
+  nameEn?: string;
   name_en?: string;
   title?: string;
   title_vi?: string;
+  titleJa?: string;
   title_ja?: string;
+  titleEn?: string;
   title_en?: string;
   specialization?: string;
   bio?: string;
   bio_vi?: string;
+  bioJa?: string;
   bio_ja?: string;
+  bioEn?: string;
   bio_en?: string;
   image?: string;
+  status?: boolean | string;
+  order?: number | string;
+}
+
+export interface SheetPartnerRow {
+  name?: string;
+  country?: string;
+  countryJa?: string;
+  countryEn?: string;
   status?: boolean | string;
   order?: number | string;
 }
@@ -113,6 +156,7 @@ export interface SheetSiteData {
   programs: Program[];
   news: NewsArticle[];
   faculty: (FacultyMember & { order?: number })[];
+  partners: PartnerItem[];
   updatedAt?: string;
 }
 
@@ -120,10 +164,13 @@ interface AppsScriptAllResponse {
   status: string;
   updatedAt?: string;
   data?: {
+    home?: SheetConfigRow[];
+    about?: SheetConfigRow[];
     config?: SheetConfigRow[];
     programs?: SheetProgramRow[];
     news?: SheetNewsRow[];
     faculty?: SheetFacultyRow[];
+    partners?: SheetPartnerRow[];
   };
 }
 
@@ -177,10 +224,15 @@ function normalizeNewsCategory(cat?: string): NewsArticle["category"] {
   return "announcement";
 }
 
-function parseFeatures(raw?: string): string[] {
+function parseFeatures(raw?: string | string[]): string[] {
   if (!raw) return [];
-  return String(raw)
-    .split(/\||\n/)
+  if (Array.isArray(raw)) {
+    return raw.map((item) => String(item).trim()).filter(Boolean);
+  }
+  const str = String(raw);
+  const sep = str.includes("|") ? "|" : str.includes("\n") ? "\n" : ",";
+  return str
+    .split(sep)
     .map((item) => item.trim())
     .filter(Boolean);
 }
@@ -189,12 +241,12 @@ export function normalizeConfigFromSheet(rows: SheetConfigRow[]): SiteConfigOver
   const map: SiteConfigOverrides = {};
   for (const row of rows) {
     const key = String(row.key || "").trim();
-    const vi = String(row.value_vi ?? "").trim();
+    const vi = String(row.vi ?? row.value_vi ?? "").trim();
     if (!key || !vi) continue;
     map[key] = {
       vi,
-      ja: String(row.value_ja ?? "").trim() || undefined,
-      en: String(row.value_en ?? "").trim() || undefined,
+      ja: String(row.ja ?? row.value_ja ?? "").trim() || undefined,
+      en: String(row.en ?? row.value_en ?? "").trim() || undefined,
     };
   }
   return map;
@@ -205,11 +257,11 @@ export function normalizeProgramsFromSheet(rows: SheetProgramRow[]): Program[] {
     .filter((row) => isRowEnabled(row.status))
     .map((row) => {
       const titleVi = String(row.title_vi || row.title || "").trim();
-      const titleEn = String(row.title_en || "").trim() || titleVi;
-      const titleJa = String(row.title_ja || "").trim() || titleVi;
+      const titleEn = String(row.titleEn || row.title_en || "").trim() || titleVi;
+      const titleJa = String(row.titleJa || row.title_ja || "").trim() || titleVi;
       const descVi = String(row.description_vi || row.description || "").trim();
-      const descEn = String(row.description_en || "").trim() || descVi;
-      const descJa = String(row.description_ja || "").trim() || descVi;
+      const descEn = String(row.descriptionEn || row.description_en || "").trim() || descVi;
+      const descJa = String(row.descriptionJa || row.description_ja || "").trim() || descVi;
       const slug = String(row.slug || "").trim() || slugifyVietnamese(titleVi);
 
       return {
@@ -221,12 +273,12 @@ export function normalizeProgramsFromSheet(rows: SheetProgramRow[]): Program[] {
         description: descVi,
         descriptionEn: descEn,
         descriptionJa: descJa,
-        overview: String(row.overview_vi || "").trim() || undefined,
-        overviewEn: String(row.overview_en || "").trim() || undefined,
-        overviewJa: String(row.overview_ja || "").trim() || undefined,
-        requirement: String(row.requirement_vi || "").trim() || undefined,
-        requirementEn: String(row.requirement_en || "").trim() || undefined,
-        requirementJa: String(row.requirement_ja || "").trim() || undefined,
+        overview: String(row.overview_vi || row.overview || "").trim() || undefined,
+        overviewEn: String(row.overviewEn || row.overview_en || "").trim() || undefined,
+        overviewJa: String(row.overviewJa || row.overview_ja || "").trim() || undefined,
+        requirement: String(row.requirement_vi || row.requirement || "").trim() || undefined,
+        requirementEn: String(row.requirementEn || row.requirement_en || "").trim() || undefined,
+        requirementJa: String(row.requirementJa || row.requirement_ja || "").trim() || undefined,
         duration: String(row.duration || "1 - 2 học kỳ").trim(),
         image: String(row.image || "/images/placeholder/program-exchange-1.jpg").trim(),
         features: parseFeatures(row.features),
@@ -243,14 +295,14 @@ export function normalizeNewsFromSheet(rows: SheetNewsRow[]): NewsArticle[] {
     .filter((row) => isRowEnabled(row.status))
     .map((row) => {
       const titleVi = String(row.title_vi || row.title || "").trim();
-      const titleEn = String(row.title_en || "").trim() || titleVi;
-      const titleJa = String(row.title_ja || "").trim() || titleVi;
+      const titleEn = String(row.titleEn || row.title_en || "").trim() || titleVi;
+      const titleJa = String(row.titleJa || row.title_ja || "").trim() || titleVi;
       const excerptVi = String(row.excerpt_vi || row.excerpt || "").trim();
-      const excerptEn = String(row.excerpt_en || "").trim() || excerptVi;
-      const excerptJa = String(row.excerpt_ja || "").trim() || excerptVi;
+      const excerptEn = String(row.excerptEn || row.excerpt_en || "").trim() || excerptVi;
+      const excerptJa = String(row.excerptJa || row.excerpt_ja || "").trim() || excerptVi;
       const contentVi = String(row.content_vi || row.content || excerptVi).trim();
-      const contentEn = String(row.content_en || "").trim() || contentVi;
-      const contentJa = String(row.content_ja || "").trim() || contentVi;
+      const contentEn = String(row.contentEn || row.content_en || "").trim() || contentVi;
+      const contentJa = String(row.contentJa || row.content_ja || "").trim() || contentVi;
       const slug = String(row.slug || "").trim() || slugifyVietnamese(titleVi);
 
       return {
@@ -287,21 +339,41 @@ export function normalizeFacultyFromSheet(
 
       return {
         name: nameVi,
-        nameEn: String(row.name_en || "").trim() || nameVi,
-        nameJa: String(row.name_ja || "").trim() || nameVi,
+        nameEn: String(row.nameEn || row.name_en || "").trim() || nameVi,
+        nameJa: String(row.nameJa || row.name_ja || "").trim() || nameVi,
         title: titleVi,
-        titleEn: String(row.title_en || "").trim() || titleVi,
-        titleJa: String(row.title_ja || "").trim() || titleVi,
+        titleEn: String(row.titleEn || row.title_en || "").trim() || titleVi,
+        titleJa: String(row.titleJa || row.title_ja || "").trim() || titleVi,
         specialization: String(row.specialization || "").trim(),
         bio: bioVi,
-        bioEn: String(row.bio_en || "").trim() || bioVi,
-        bioJa: String(row.bio_ja || "").trim() || bioVi,
+        bioEn: String(row.bioEn || row.bio_en || "").trim() || bioVi,
+        bioJa: String(row.bioJa || row.bio_ja || "").trim() || bioVi,
         image: String(row.image || "/images/placeholder/faculty-1.jpg").trim(),
         order: toNumber(row.order),
       };
     })
     .filter((m) => Boolean(m.name && m.title))
     .sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+}
+
+export function normalizePartnersFromSheet(rows: SheetPartnerRow[]): PartnerItem[] {
+  return rows
+    .filter((row) => isRowEnabled(row.status))
+    .map((row) => ({
+      name: String(row.name || "").trim(),
+      country: String(row.country || "🇯🇵 Nhật Bản").trim(),
+      countryJa: String(row.countryJa || "").trim() || undefined,
+      countryEn: String(row.countryEn || "").trim() || undefined,
+      order: toNumber(row.order),
+    }))
+    .filter((p) => Boolean(p.name))
+    .sort((a, b) => a.order - b.order)
+    .map(({ name, country, countryJa, countryEn }) => ({
+      name,
+      country,
+      countryJa,
+      countryEn,
+    }));
 }
 
 async function fetchWithTimeout(
@@ -322,7 +394,7 @@ function isAppsScriptConfigured(): boolean {
 }
 
 /**
- * Tải toàn bộ dữ liệu CMS (Config, Programs, News, Faculty) từ Google Sheet trong 1 request.
+ * Tải toàn bộ dữ liệu CMS (home, about, programs, news, faculty, partners) trong 1 request.
  */
 export async function fetchAllSiteData(
   forceRefresh = false
@@ -330,7 +402,7 @@ export async function fetchAllSiteData(
   if (!isAppsScriptConfigured()) return null;
 
   try {
-    const query = forceRefresh ? "action=all&nocache=1" : "action=all";
+    const query = forceRefresh ? "sheet=all&nocache=1" : "sheet=all";
     const separator = APPS_SCRIPT_URL.includes("?") ? "&" : "?";
     const res = await fetchWithTimeout(`${APPS_SCRIPT_URL}${separator}${query}`);
     if (!res.ok) return null;
@@ -338,11 +410,18 @@ export async function fetchAllSiteData(
     const json = (await res.json()) as AppsScriptAllResponse;
     if (json.status !== "success" || !json.data) return null;
 
+    const mergedConfigRows = [
+      ...(json.data.config || []),
+      ...(json.data.home || []),
+      ...(json.data.about || []),
+    ];
+
     return {
-      config: normalizeConfigFromSheet(json.data.config || []),
+      config: normalizeConfigFromSheet(mergedConfigRows),
       programs: normalizeProgramsFromSheet(json.data.programs || []),
       news: normalizeNewsFromSheet(json.data.news || []),
       faculty: normalizeFacultyFromSheet(json.data.faculty || []),
+      partners: normalizePartnersFromSheet(json.data.partners || []),
       updatedAt: json.updatedAt,
     };
   } catch (err) {
@@ -352,7 +431,7 @@ export async function fetchAllSiteData(
 }
 
 /**
- * Gửi form đăng ký xét tuyển / tư vấn du học sang Google Sheet (tab Don_Dang_Ky)
+ * Gửi form đăng ký xét tuyển / tư vấn du học sang Google Sheet (tab admissions)
  */
 export async function submitApplication(
   data: StudentApplication
@@ -395,7 +474,7 @@ export async function submitApplication(
 }
 
 /**
- * Gửi form liên hệ / thắc mắc sang Google Sheet (tab Lien_He)
+ * Gửi form liên hệ / thắc mắc sang Google Sheet (tab contact)
  */
 export async function submitContact(
   data: ContactSubmission

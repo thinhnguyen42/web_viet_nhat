@@ -12,13 +12,16 @@ import { useSiteData } from "@/components/providers/SiteDataProvider";
 
 export default function LatestNews() {
   const { locale, t } = useLanguage();
-  const { news, getNewsHref } = useSiteData();
+  const { news, getNewsHref, getConfigText } = useSiteData();
   const latest = news.slice(0, 3);
+  const sectionTitle = getConfigText("section_news_title", locale, t.sections.latestNews);
+  const readMoreLabel = getConfigText("btn_read_more", locale, t.news.readMore);
+  const viewAllLabel = getConfigText("btn_view_all", locale, t.news.viewAll);
 
   return (
     <section className="section-padding bg-neutral-50/60">
       <Container>
-        <SectionHeading title={t.sections.latestNews} />
+        <SectionHeading title={sectionTitle} />
         <div className="grid md:grid-cols-3 gap-6">
           {latest.map((article, i) => (
             <motion.div
@@ -57,7 +60,7 @@ export default function LatestNews() {
                     href={getNewsHref(article.slug)}
                     className="text-primary-600 hover:text-primary-800 text-sm font-semibold inline-flex items-center gap-1.5 hover:gap-2.5 transition-all"
                   >
-                    {t.news.readMore} <ArrowRight className="w-4 h-4" />
+                    {readMoreLabel} <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
               </Card>
@@ -69,7 +72,7 @@ export default function LatestNews() {
             href="/news"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border-2 border-primary-500 text-primary-600 hover:bg-primary-50 font-semibold text-sm transition-all"
           >
-            {t.news.viewAll} <ArrowRight className="w-4 h-4" />
+            {viewAllLabel} <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </Container>

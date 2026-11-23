@@ -10,11 +10,16 @@ export default function HeroSection() {
   const { locale, t } = useLanguage();
   const { getConfigText } = useSiteData();
 
-  const badge = getConfigText("hero_badge", locale, "Đại học Mở TP.HCM");
-  const title = getConfigText("hero_title", locale, t.hero.title);
-  const subtitle = getConfigText("hero_subtitle", locale, t.hero.subtitle);
-  const cta1 = getConfigText("hero_cta1", locale, t.hero.cta1);
-  const cta2 = getConfigText("hero_cta2", locale, t.hero.cta2);
+  const badge = getConfigText("badge", locale, getConfigText("hero_badge", locale, "Đại học Mở TP.HCM"));
+  const title = getConfigText("main_title", locale, getConfigText("hero_title", locale, t.hero.title));
+  const subtitle = getConfigText("subtitle", locale, getConfigText("hero_subtitle", locale, t.hero.subtitle));
+  const cta1 = getConfigText("btn_explore", locale, getConfigText("hero_cta1", locale, t.hero.cta1));
+  const cta2 = getConfigText("btn_contact", locale, getConfigText("hero_cta2", locale, t.hero.cta2));
+  const cardTag = getConfigText("card_tag", locale, "Vietnam - Japan Academic Exchange");
+  const cardTitle = getConfigText("card_title", locale, "VIỆT NAM • NHẬT BẢN");
+  const cardSubtitle = getConfigText("card_subtitle", locale, "Hợp tác học thuật & Trao đổi sinh viên du học");
+  const statCount = getConfigText("stat_students_count", locale, "500+");
+  const statStudents = getConfigText("stat_students", locale, "Học viên mỗi năm");
 
   return (
     <section className="relative min-h-[85vh] flex items-center bg-gradient-to-br from-primary-50/70 via-white to-accent-50/50 overflow-hidden py-12 md:py-20">
@@ -65,7 +70,7 @@ export default function HeroSection() {
 
                 <div className="relative z-10 flex justify-between items-start">
                   <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold uppercase tracking-wider">
-                    Vietnam - Japan Academic Exchange
+                    {cardTag}
                   </span>
                   <div className="flex gap-3 text-3xl">
                     <span>🇻🇳</span>
@@ -76,10 +81,10 @@ export default function HeroSection() {
 
                 <div className="relative z-10 my-auto text-center py-6">
                   <p className="text-3xl sm:text-5xl font-heading font-extrabold tracking-tight text-white mb-2">
-                    VIỆT NAM • NHẬT BẢN
+                    {cardTitle}
                   </p>
                   <p className="text-primary-200 text-sm sm:text-base font-medium">
-                    Hợp tác học thuật & Trao đổi sinh viên du học
+                    {cardSubtitle}
                   </p>
                 </div>
 
@@ -111,10 +116,10 @@ export default function HeroSection() {
                 </div>
                 <div>
                   <p className="text-xl font-bold text-neutral-900 leading-none">
-                    500+
+                    {statCount}
                   </p>
                   <p className="text-xs text-neutral-500 mt-1">
-                    Học viên mỗi năm
+                    {statStudents}
                   </p>
                 </div>
               </motion.div>

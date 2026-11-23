@@ -15,14 +15,24 @@ import { facultyMembers as staticFaculty, type FacultyMember } from "@/data/facu
 import type { Locale } from "@/data/i18n";
 import {
   fetchAllSiteData,
+  type PartnerItem,
   type SiteConfigOverrides,
 } from "@/lib/appsScriptApi";
 
-const CACHE_STORAGE_KEY = "vnj_sheet_cache_v1";
+const CACHE_STORAGE_KEY = "vnj_sheet_cache_v2";
 const CACHE_TTL_MS = 60 * 1000;
 
 const STATIC_PROGRAM_SLUGS = new Set(staticPrograms.map((p) => p.slug));
 const STATIC_NEWS_SLUGS = new Set(staticNews.map((n) => n.slug));
+
+const defaultPartners: PartnerItem[] = [
+  { name: "The University of Tokyo", country: "🇯🇵 Tokyo, Nhật Bản", countryJa: "🇯🇵 東京・日本", countryEn: "🇯🇵 Tokyo, Japan" },
+  { name: "Kyoto University", country: "🇯🇵 Kyoto, Nhật Bản", countryJa: "🇯🇵 京都・日本", countryEn: "🇯🇵 Kyoto, Japan" },
+  { name: "Osaka University", country: "🇯🇵 Osaka, Nhật Bản", countryJa: "🇯🇵 大阪・日本", countryEn: "🇯🇵 Osaka, Japan" },
+  { name: "Tohoku University", country: "🇯🇵 Sendai, Nhật Bản", countryJa: "🇯🇵 仙台・日本", countryEn: "🇯🇵 Sendai, Japan" },
+  { name: "Nagoya University", country: "🇯🇵 Nagoya, Nhật Bản", countryJa: "🇯🇵 名古屋・日本", countryEn: "🇯🇵 Nagoya, Japan" },
+  { name: "Waseda University", country: "🇯🇵 Tokyo, Nhật Bản", countryJa: "🇯🇵 東京・日本", countryEn: "🇯🇵 Tokyo, Japan" },
+];
 
 interface CachedPayload {
   timestamp: number;
@@ -30,12 +40,14 @@ interface CachedPayload {
   programs: Program[];
   news: NewsArticle[];
   faculty: FacultyMember[];
+  partners: PartnerItem[];
 }
 
 interface SiteDataContextValue {
   programs: Program[];
   news: NewsArticle[];
   faculty: FacultyMember[];
+  partners: PartnerItem[];
   config: SiteConfigOverrides;
   isLoadedFromSheet: boolean;
   getConfigText: (key: string, locale: Locale, fallback: string) => string;
@@ -52,6 +64,7 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
   const [programs, setPrograms] = useState<Program[]>(staticPrograms);
   const [news, setNews] = useState<NewsArticle[]>(staticNews);
   const [faculty, setFaculty] = useState<FacultyMember[]>(staticFaculty);
+  const [partners, setPartners] = useState<PartnerItem[]>(defaultPartners);
   const [config, setConfig] = useState<SiteConfigOverrides>({});
   const [isLoadedFromSheet, setIsLoadedFromSheet] = useState(false);
 
@@ -61,6 +74,7 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
       programs?: Program[];
       news?: NewsArticle[];
       faculty?: FacultyMember[];
+      partners?: PartnerItem[];
     }) => {
       if (payload.config && Object.keys(payload.config).length > 0) {
         setConfig(payload.config);
@@ -73,6 +87,9 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
       }
       if (payload.faculty && payload.faculty.length > 0) {
         setFaculty(payload.faculty);
+      }
+      if (payload.partners && payload.partners.length > 0) {
+        setPartners(payload.partners);
       }
       setIsLoadedFromSheet(true);
     },
@@ -93,6 +110,7 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
           programs: sheetData.programs,
           news: sheetData.news,
           faculty: sheetData.faculty,
+          partners: sheetData.partners,
         };
         sessionStorage.setItem(CACHE_STORAGE_KEY, JSON.stringify(cached));
       } catch {
@@ -141,6 +159,7 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
           programs: sheetData.programs,
           news: sheetData.news,
           faculty: sheetData.faculty,
+          partners: sheetData.partners,
         };
         sessionStorage.setItem(CACHE_STORAGE_KEY, JSON.stringify(cached));
       } catch {
@@ -188,6 +207,7 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
       programs,
       news,
       faculty,
+      partners,
       config,
       isLoadedFromSheet,
       getConfigText,
@@ -199,6 +219,7 @@ export function SiteDataProvider({ children }: { children: ReactNode }) {
       programs,
       news,
       faculty,
+      partners,
       config,
       isLoadedFromSheet,
       getConfigText,

@@ -3,23 +3,17 @@
 import Container from "@/components/layout/Container";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { useLanguage } from "@/components/providers/LanguageProvider";
-
-const partners = [
-  { name: "The University of Tokyo", country: "🇯🇵 Tokyo, Nhật Bản" },
-  { name: "Kyoto University", country: "🇯🇵 Kyoto, Nhật Bản" },
-  { name: "Osaka University", country: "🇯🇵 Osaka, Nhật Bản" },
-  { name: "Tohoku University", country: "🇯🇵 Sendai, Nhật Bản" },
-  { name: "Nagoya University", country: "🇯🇵 Nagoya, Nhật Bản" },
-  { name: "Waseda University", country: "🇯🇵 Tokyo, Nhật Bản" },
-];
+import { useSiteData } from "@/components/providers/SiteDataProvider";
 
 export default function PartnersSection() {
-  const { t } = useLanguage();
+  const { locale, t } = useLanguage();
+  const { partners, getConfigText } = useSiteData();
+  const sectionTitle = getConfigText("section_partners_title", locale, t.sections.partners);
 
   return (
     <section className="section-padding bg-white">
       <Container>
-        <SectionHeading title={t.sections.partners} />
+        <SectionHeading title={sectionTitle} />
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
           {partners.map((partner, i) => (
             <div
@@ -27,7 +21,11 @@ export default function PartnersSection() {
               className="h-28 rounded-2xl border border-neutral-200/80 bg-neutral-50/50 hover:bg-white flex flex-col items-center justify-center p-4 text-center grayscale hover:grayscale-0 opacity-70 hover:opacity-100 hover:shadow-md hover:border-primary-200 transition-all duration-300"
             >
               <span className="text-xs font-semibold text-primary-600 mb-1">
-                {partner.country}
+                {locale === "ja"
+                  ? partner.countryJa || partner.country
+                  : locale === "en"
+                  ? partner.countryEn || partner.country
+                  : partner.country}
               </span>
               <p className="text-xs text-neutral-800 font-bold leading-tight">
                 {partner.name}

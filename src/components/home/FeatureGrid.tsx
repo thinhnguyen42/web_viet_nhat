@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 import Container from "@/components/layout/Container";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { useSiteData } from "@/components/providers/SiteDataProvider";
 
 const features = [
   {
@@ -45,11 +46,13 @@ const features = [
 
 export default function FeatureGrid() {
   const { locale, t } = useLanguage();
+  const { getConfigText } = useSiteData();
+  const sectionTitle = getConfigText("section_features_title", locale, t.sections.features);
 
   return (
     <section className="section-padding bg-white">
       <Container>
-        <SectionHeading title={t.sections.features} />
+        <SectionHeading title={sectionTitle} />
         <div className="grid md:grid-cols-3 gap-6">
           {features.map((f, i) => (
             <motion.div

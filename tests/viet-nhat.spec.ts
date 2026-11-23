@@ -125,29 +125,37 @@ test.describe("Website Học Thuật & Trao Đổi Du Học Sinh Việt - Nhật
           status: "success",
           action: "all",
           data: {
-            config: [
+            home: [
               {
-                key: "hero_title",
-                value_vi: "Trung Tâm Việt - Nhật (Dữ Liệu Google Sheet)",
-                value_ja: "",
-                value_en: "",
+                key: "main_title",
+                vi: "Trung Tâm Việt - Nhật (Dữ Liệu Google Sheet)",
+                ja: "",
+                en: "",
               },
             ],
+            about: [],
             programs: [],
             news: [
               {
-                id: "NEWS-SHEET-01",
                 slug: "su-kien-moi-tu-google-sheet",
                 category: "announcement",
                 date: "2026-11-23",
                 featured: true,
-                title_vi: "Thông báo mới cập nhật trực tiếp từ Google Sheet",
-                excerpt_vi: "Nội dung tóm tắt đồng bộ thời gian thực.",
-                content_vi: "Đoạn nội dung chi tiết 1 từ Google Sheet.\nĐoạn nội dung chi tiết 2 từ Google Sheet.",
+                title: "Thông báo mới cập nhật trực tiếp từ Google Sheet",
+                excerpt: "Nội dung tóm tắt đồng bộ thời gian thực.",
+                content: "Đoạn nội dung chi tiết 1 từ Google Sheet.\nĐoạn nội dung chi tiết 2 từ Google Sheet.",
                 status: true,
               },
             ],
             faculty: [],
+            partners: [
+              {
+                name: "Keio University",
+                country: "🇯🇵 Tokyo, Nhật Bản",
+                status: true,
+                order: 1,
+              },
+            ],
           },
         }),
       });

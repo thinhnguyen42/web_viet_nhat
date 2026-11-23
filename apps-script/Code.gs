@@ -1,47 +1,53 @@
 /**
- * Google Apps Script Backend CMS for Vietnam - Japan Academic Center (Web_Viet_Nhat)
- * Hỗ trợ quản trị toàn bộ nội dung 3 ngôn ngữ (VI - JA - EN) qua 6 tab Google Sheet:
- *   1. CauHinh_TrangWeb   (Hero, Stats, About, CTA, Contact info)
- *   2. ChuongTrinh_TraoDoi (Chương trình trao đổi, học bổng, tiếng Nhật)
- *   3. TinTuc_HocThuat     (Tin tức, thông báo, hội thảo)
- *   4. DoiNgu_GiangVien    (Hội đồng cố vấn & giảng viên)
- *   5. Don_Dang_Ky         (Hồ sơ đăng ký từ /admissions)
- *   6. Lien_He             (Thắc mắc từ /contact)
+ * Google Apps Script Backend CMS — Website Hợp Tác Học Thuật Việt - Nhật (HCMCOU)
+ * Google Sheet ID: 1v-WuSh5M3V1az6970Y8sP6OhOUoAeTYhHy6MS73zVRU
+ *
+ * Hỗ trợ 2 chế độ gọi GET:
+ *   - ?sheet=all (hoặc mặc định không truyền tham số): Trả toàn bộ dữ liệu các tab cho Website
+ *   - ?sheet=home | about | programs | news | faculty | partners: Trả trực tiếp mảng JSON của tab đó
+ * Hỗ trợ POST:
+ *   - type = "application" -> Lưu vào tab "admissions"
+ *   - type = "contact"     -> Lưu vào tab "contact"
  */
 
-const SHEET_NAMES = {
-  CONFIG: "CauHinh_TrangWeb",
-  PROGRAMS: "ChuongTrinh_TraoDoi",
-  NEWS: "TinTuc_HocThuat",
-  FACULTY: "DoiNgu_GiangVien",
-  APPLICATIONS: "Don_Dang_Ky",
-  CONTACTS: "Lien_He",
-};
-
-const CACHE_KEY_ALL = "VNJ_CMS_ALL_V1";
+const SPREADSHEET_ID = "1v-WuSh5M3V1az6970Y8sP6OhOUoAeTYhHy6MS73zVRU";
+const CACHE_KEY_ALL = "VNJ_SHEET_CMS_ALL_V2";
 const CACHE_TTL_SECONDS = 60;
 
+const TABS = {
+  HOME: "home",
+  ABOUT: "about",
+  PROGRAMS: "programs",
+  NEWS: "news",
+  FACULTY: "faculty",
+  PARTNERS: "partners",
+  ADMISSIONS: "admissions",
+  CONTACT: "contact",
+};
+
+function getTargetSpreadsheet() {
+  const active = SpreadsheetApp.getActiveSpreadsheet();
+  if (active) return active;
+  return SpreadsheetApp.openById(SPREADSHEET_ID);
+}
+
 /**
- * Tạo menu quản trị trực tiếp trên thanh công cụ Google Sheet
+ * Tạo menu quản trị ngay trên Google Sheet để người không rành code thao tác bằng 1 cú bấm
  */
 function onOpen() {
-  const ui = SpreadsheetApp.getUi();
-  ui.createMenu("🎓 Quản trị Web Việt - Nhật")
-    .addItem("✨ Khởi tạo / Đồng bộ đủ 6 Sheet mẫu", "initAllSampleSheets")
+  SpreadsheetApp.getUi()
+    .createMenu("🎓 Quản trị Web Việt - Nhật")
+    .addItem("✨ Khởi tạo & Điền toàn bộ dữ liệu mẫu", "khoiTaoTatCaDuLieuVietNhat")
     .addItem("🔗 Tự động tạo Slug (Cho dòng trống)", "fillMissingSlugs")
     .addItem("🧹 Xóa Cache API ngay", "clearApiCache")
     .addToUi();
 }
 
-/**
- * Xóa cache để website nhận thay đổi mới ngay lập tức
- */
 function clearApiCache() {
-  const cache = CacheService.getScriptCache();
-  cache.remove(CACHE_KEY_ALL);
+  CacheService.getScriptCache().remove(CACHE_KEY_ALL);
   try {
-    SpreadsheetApp.getActiveSpreadsheet().toast(
-      "Đã xóa cache API. Website sẽ lấy dữ liệu mới nhất ở lần tải tiếp theo.",
+    getTargetSpreadsheet().toast(
+      "Đã xóa cache. Website sẽ cập nhật nội dung mới ở lần tải tiếp theo.",
       "Web Việt - Nhật",
       4
     );
@@ -51,42 +57,38 @@ function clearApiCache() {
 }
 
 /**
- * Khởi tạo đủ 6 tab mẫu nếu chưa tồn tại (không ghi đè tab đã có dữ liệu)
+ * CHẠY HÀM NÀY 1 LẦN TRONG APPS SCRIPT để tự động tạo & điền đầy đủ 8 tab vào Google Sheet
  */
-function initAllSampleSheets() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  Object.keys(SHEET_NAMES).forEach(function (k) {
-    ensureSheet(ss, SHEET_NAMES[k]);
+function khoiTaoTatCaDuLieuVietNhat() {
+  const ss = getTargetSpreadsheet();
+  Object.keys(TABS).forEach(function (k) {
+    seedTabIfEmpty(ss, TABS[k]);
   });
   clearApiCache();
-  try {
-    ss.toast("Đã kiểm tra và khởi tạo đủ 6 tab Google Sheet cho Web Việt - Nhật.", "Hoàn tất", 5);
-  } catch (err) {
-    Logger.log(err);
-  }
+  Logger.log("Hoàn tất khởi tạo & điền dữ liệu cho Google Sheet: " + ss.getUrl());
 }
 
 /**
- * Tự động tạo slug chuẩn URL cho các dòng còn trống cột slug ở tab Chương trình & Tin tức
+ * Tự động sinh slug chuẩn URL cho các dòng bỏ trống cột slug ở tab programs & news
  */
 function fillMissingSlugs() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  [SHEET_NAMES.PROGRAMS, SHEET_NAMES.NEWS].forEach(function (name) {
+  const ss = getTargetSpreadsheet();
+  [TABS.PROGRAMS, TABS.NEWS].forEach(function (name) {
     const sheet = ss.getSheetByName(name);
     if (!sheet) return;
     const values = sheet.getDataRange().getValues();
     if (values.length <= 1) return;
 
-    const headers = values[0];
+    const headers = values[0].map(function (h) { return String(h).trim(); });
     const slugCol = headers.indexOf("slug");
-    const titleCol = headers.indexOf("title_vi");
+    const titleCol = headers.indexOf("title");
     if (slugCol === -1 || titleCol === -1) return;
 
     for (let i = 1; i < values.length; i++) {
-      const currentSlug = String(values[i][slugCol] || "").trim();
-      const titleVi = String(values[i][titleCol] || "").trim();
-      if (!currentSlug && titleVi) {
-        sheet.getRange(i + 1, slugCol + 1).setValue(slugifyVietnamese(titleVi));
+      const slugVal = String(values[i][slugCol] || "").trim();
+      const titleVal = String(values[i][titleCol] || "").trim();
+      if (!slugVal && titleVal) {
+        sheet.getRange(i + 1, slugCol + 1).setValue(slugifyVietnamese(titleVal));
       }
     }
   });
@@ -94,27 +96,30 @@ function fillMissingSlugs() {
 }
 
 /**
- * Xử lý yêu cầu GET:
- *   ?action=all       -> Trả toàn bộ config, programs, news, faculty trong 1 JSON (khuyên dùng)
- *   ?action=programs  -> Chỉ lấy chương trình
- *   ?action=news      -> Chỉ lấy tin tức
- *   ?action=faculty   -> Chỉ lấy giảng viên
- *   ?action=config    -> Chỉ lấy cấu hình & nội dung About/Home/Contact
- *   &nocache=1        -> Bỏ qua CacheService 60s
+ * Xử lý GET:
+ *   - ?sheet=programs -> Trả mảng JSON các dòng của tab "programs"
+ *   - ?sheet=home     -> Trả mảng JSON các dòng của tab "home"
+ *   - ?sheet=all      -> Trả JSON gộp toàn bộ { status: "success", data: { home, about, programs, news, faculty, partners } }
  */
 function doGet(e) {
   try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = getTargetSpreadsheet();
     const params = (e && e.parameter) ? e.parameter : {};
-    const action = params.action ? String(params.action) : "all";
+    const requested = params.sheet
+      ? String(params.sheet).trim()
+      : params.action
+      ? String(params.action).trim()
+      : "all";
     const noCache = params.nocache === "1" || params.nocache === "true";
 
-    if (action === "all") {
+    if (requested === "all") {
       const cache = CacheService.getScriptCache();
       if (!noCache) {
         const cached = cache.get(CACHE_KEY_ALL);
         if (cached) {
-          return jsonResponse(JSON.parse(cached));
+          return ContentService.createTextOutput(cached).setMimeType(
+            ContentService.MimeType.JSON
+          );
         }
       }
 
@@ -123,10 +128,12 @@ function doGet(e) {
         action: "all",
         updatedAt: new Date().toISOString(),
         data: {
-          config: getSheetDataAsJson(ensureSheet(ss, SHEET_NAMES.CONFIG)),
-          programs: getSheetDataAsJson(ensureSheet(ss, SHEET_NAMES.PROGRAMS)),
-          news: getSheetDataAsJson(ensureSheet(ss, SHEET_NAMES.NEWS)),
-          faculty: getSheetDataAsJson(ensureSheet(ss, SHEET_NAMES.FACULTY)),
+          home: readSheetRows(ss, TABS.HOME),
+          about: readSheetRows(ss, TABS.ABOUT),
+          programs: readSheetRows(ss, TABS.PROGRAMS),
+          news: readSheetRows(ss, TABS.NEWS),
+          faculty: readSheetRows(ss, TABS.FACULTY),
+          partners: readSheetRows(ss, TABS.PARTNERS),
         },
       };
 
@@ -134,42 +141,35 @@ function doGet(e) {
       if (serialized.length < 95000) {
         cache.put(CACHE_KEY_ALL, serialized, CACHE_TTL_SECONDS);
       }
-      return jsonResponse(payload);
+      return ContentService.createTextOutput(serialized).setMimeType(
+        ContentService.MimeType.JSON
+      );
     }
 
-    const actionMap = {
-      programs: SHEET_NAMES.PROGRAMS,
-      news: SHEET_NAMES.NEWS,
-      faculty: SHEET_NAMES.FACULTY,
-      config: SHEET_NAMES.CONFIG,
-    };
+    const sheet = ss.getSheetByName(requested);
+    if (!sheet) {
+      return ContentService.createTextOutput(
+        JSON.stringify({ error: "Không tìm thấy tab: " + requested })
+      ).setMimeType(ContentService.MimeType.JSON);
+    }
 
-    const targetName = actionMap[action] || SHEET_NAMES.PROGRAMS;
-    const sheet = ensureSheet(ss, targetName);
-    const data = getSheetDataAsJson(sheet);
-
-    return jsonResponse({
-      status: "success",
-      action: action,
-      total: data.length,
-      data: data,
-    });
+    const data = formatRowsForTab(sheet, requested);
+    return ContentService.createTextOutput(JSON.stringify(data)).setMimeType(
+      ContentService.MimeType.JSON
+    );
   } catch (error) {
-    return jsonResponse({
-      status: "error",
-      message: error.toString(),
-    });
+    return ContentService.createTextOutput(
+      JSON.stringify({ status: "error", error: error.toString() })
+    ).setMimeType(ContentService.MimeType.JSON);
   }
 }
 
 /**
- * Xử lý yêu cầu POST:
- *   type = "application" (mặc định) -> Lưu vào Don_Dang_Ky
- *   type = "contact"                -> Lưu vào Lien_He
+ * Xử lý POST: Lưu đơn đăng ký (/admissions) hoặc tin nhắn liên hệ (/contact) vào Google Sheet
  */
 function doPost(e) {
   try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = getTargetSpreadsheet();
     let payload = {};
 
     if (e && e.postData && e.postData.contents) {
@@ -178,11 +178,14 @@ function doPost(e) {
       payload = e.parameter;
     }
 
-    const timestamp = Utilities.formatDate(new Date(), "Asia/Ho_Chi_Minh", "dd/MM/yyyy HH:mm:ss");
-    const submitType = payload.type === "contact" ? "contact" : "application";
+    const timestamp = Utilities.formatDate(
+      new Date(),
+      "Asia/Ho_Chi_Minh",
+      "dd/MM/yyyy HH:mm:ss"
+    );
 
-    if (submitType === "contact") {
-      const contactSheet = ensureSheet(ss, SHEET_NAMES.CONTACTS);
+    if (payload.type === "contact") {
+      const contactSheet = seedTabIfEmpty(ss, TABS.CONTACT);
       contactSheet.appendRow([
         timestamp,
         payload.name || payload.fullName || "",
@@ -192,15 +195,17 @@ function doPost(e) {
         "Mới tiếp nhận",
       ]);
 
-      return jsonResponse({
-        status: "success",
-        type: "contact",
-        message: "Gửi tin nhắn liên hệ thành công!",
-        timestamp: timestamp,
-      });
+      return ContentService.createTextOutput(
+        JSON.stringify({
+          status: "success",
+          type: "contact",
+          message: "Gửi tin nhắn liên hệ thành công!",
+          timestamp: timestamp,
+        })
+      ).setMimeType(ContentService.MimeType.JSON);
     }
 
-    const appSheet = ensureSheet(ss, SHEET_NAMES.APPLICATIONS);
+    const appSheet = seedTabIfEmpty(ss, TABS.ADMISSIONS);
     appSheet.appendRow([
       timestamp,
       payload.fullName || payload.name || "",
@@ -212,81 +217,66 @@ function doPost(e) {
       "Chờ xử lý",
     ]);
 
-    return jsonResponse({
-      status: "success",
-      type: "application",
-      message: "Gửi thông tin đăng ký thành công!",
-      timestamp: timestamp,
-    });
+    return ContentService.createTextOutput(
+      JSON.stringify({
+        status: "success",
+        type: "application",
+        message: "Gửi thông tin đăng ký thành công!",
+        timestamp: timestamp,
+      })
+    ).setMimeType(ContentService.MimeType.JSON);
   } catch (error) {
-    return jsonResponse({
-      status: "error",
-      message: error.toString(),
-    });
+    return ContentService.createTextOutput(
+      JSON.stringify({ status: "error", message: error.toString() })
+    ).setMimeType(ContentService.MimeType.JSON);
   }
 }
 
-function jsonResponse(obj) {
-  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(
-    ContentService.MimeType.JSON
-  );
+function readSheetRows(ss, tabName) {
+  const sheet = seedTabIfEmpty(ss, tabName);
+  return formatRowsForTab(sheet, tabName);
 }
 
-/**
- * Đọc bảng tính thành mảng JSON object, chuẩn hóa Date -> YYYY-MM-DD và loại bỏ dòng trống hoàn toàn
- */
-function getSheetDataAsJson(sheet) {
-  const values = sheet.getDataRange().getValues();
-  if (values.length <= 1) return [];
+function formatRowsForTab(sheet, sheetName) {
+  const rows = sheet.getDataRange().getValues();
+  if (rows.length <= 1) return [];
 
-  const headers = values[0].map(function (h) {
+  const headers = rows[0].map(function (h) {
     return String(h || "").trim();
   });
 
-  const rows = values.slice(1);
-  const result = [];
+  return rows
+    .slice(1)
+    .filter(function (r) {
+      return r.some(function (cell) {
+        return cell !== "" && cell !== null && cell !== undefined;
+      });
+    })
+    .map(function (r) {
+      const obj = {};
+      headers.forEach(function (h, i) {
+        if (!h) return;
+        let val = r[i];
+        if (val instanceof Date) {
+          val = Utilities.formatDate(val, "Asia/Ho_Chi_Minh", "yyyy-MM-dd");
+        }
+        obj[h] = val;
+      });
 
-  for (let r = 0; r < rows.length; r++) {
-    const row = rows[r];
-    let hasValue = false;
-    const obj = {};
-
-    for (let c = 0; c < headers.length; c++) {
-      const key = headers[c];
-      if (!key) continue;
-      let cell = row[c];
-      if (cell instanceof Date) {
-        cell = Utilities.formatDate(cell, "Asia/Ho_Chi_Minh", "yyyy-MM-dd");
+      if (obj.features && typeof obj.features === "string") {
+        const sep = obj.features.indexOf("|") !== -1 ? "|" : ",";
+        obj.features = obj.features
+          .split(sep)
+          .map(function (f) { return f.trim(); })
+          .filter(Boolean);
       }
-      if (cell !== "" && cell !== null && cell !== undefined) {
-        hasValue = true;
+
+      if (sheetName === TABS.NEWS && obj.featured !== undefined) {
+        obj.featured = String(obj.featured).toLowerCase() === "true";
       }
-      obj[key] = cell;
-    }
 
-    if (hasValue) {
-      result.push(obj);
-    }
-  }
-
-  return result;
-}
-
-function ensureSheet(ss, sheetName) {
-  let sheet = ss.getSheetByName(sheetName);
-  if (!sheet) {
-    sheet = initSampleSheet(ss, sheetName);
-  }
-  return sheet;
-}
-
-function styleHeader(sheet, colCount) {
-  sheet
-    .getRange(1, 1, 1, colCount)
-    .setFontWeight("bold")
-    .setBackground("#1e3a8a")
-    .setFontColor("#ffffff");
-  sheet.setFrozenRows(1);
+      return obj;
+    });
 }
 
 function slugifyVietnamese(text) {
@@ -300,69 +290,102 @@ function slugifyVietnamese(text) {
     .replace(/^-+|-+$/g, "");
 }
 
-/**
- * Khởi tạo dữ liệu mẫu chuẩn khớp 100% với Web_Viet_Nhat
- */
-function initSampleSheet(ss, sheetName) {
-  const sheet = ss.insertSheet(sheetName);
+function formatTabSheet(sheet, colCount) {
+  sheet
+    .getRange(1, 1, 1, colCount)
+    .setFontWeight("bold")
+    .setBackground("#1e3a8a")
+    .setFontColor("#ffffff");
+  sheet.setFrozenRows(1);
+  sheet.getDataRange().setWrap(true).setVerticalAlignment("top");
+  for (let c = 1; c <= colCount; c++) {
+    sheet.setColumnWidth(c, c === 1 ? 190 : 280);
+  }
+}
 
-  if (sheetName === SHEET_NAMES.CONFIG) {
-    const headers = ["key", "value_vi", "value_ja", "value_en", "group", "note"];
+function seedTabIfEmpty(ss, tabName) {
+  let sheet = ss.getSheetByName(tabName);
+  if (sheet && sheet.getLastRow() > 1) {
+    return sheet;
+  }
+  if (!sheet) {
+    sheet = ss.insertSheet(tabName);
+  } else {
+    sheet.clearContents();
+  }
+
+  if (tabName === TABS.HOME) {
+    const headers = ["key", "vi", "ja", "en", "note"];
     sheet.appendRow(headers);
-    styleHeader(sheet, headers.length);
-
     const rows = [
-      ["hero_badge", "Đại học Mở TP.HCM", "ホーチミン市オープン大学", "HCMCOU", "hero", "Nhãn nhỏ phía trên tiêu đề Hero"],
-      ["hero_title", "Trung Tâm Hợp Tác Học Thuật Việt - Nhật", "日越学術協力センター", "Vietnam - Japan Academic Center", "hero", "Tiêu đề chính trang chủ"],
-      ["hero_subtitle", "Cầu nối học thuật, nghiên cứu & trao đổi du học sinh Việt Nam sang Nhật Bản", "ベトナムと日本の学術研究・留学生交流をつなぐ架け橋", "Bridging Academic Excellence & Student Exchange between Vietnam and Japan", "hero", "Mô tả dưới tiêu đề Hero"],
-      ["hero_cta1", "Chương trình trao đổi", "交換留学プログラムを見る", "Explore Exchange Programs", "hero", "Nút chính Hero"],
-      ["hero_cta2", "Đăng ký tư vấn du học", "留学相談を申し込む", "Apply for Consultation", "hero", "Nút phụ Hero"],
-      ["stat_students_value", "500", "500", "500", "stats", "Con số thống kê sinh viên sang Nhật"],
-      ["stat_students_label", "Sinh viên đã sang Nhật", "渡日留学生数", "Exchange Students in Japan", "stats", "Nhãn thống kê 1"],
-      ["stat_programs_value", "20", "20", "20", "stats", "Con số thống kê chương trình"],
-      ["stat_programs_label", "Chương trình trao đổi", "交換プログラム数", "Exchange Programs", "stats", "Nhãn thống kê 2"],
-      ["stat_partners_value", "10", "10", "10", "stats", "Con số đại học đối tác"],
-      ["stat_partners_label", "Đại học đối tác tại Nhật", "日本提携大学数", "Partner Universities in Japan", "stats", "Nhãn thống kê 3"],
-      ["stat_years_value", "15", "15", "15", "stats", "Số năm hợp tác"],
-      ["stat_years_label", "Năm hợp tác bền vững", "協力継続年数", "Years of Cooperation", "stats", "Nhãn thống kê 4"],
-      ["cta_title", "Bạn muốn du học trao đổi tại Nhật Bản?", "日本への交換留学を始めませんか？", "Ready for Your Academic Journey in Japan?", "cta", "Tiêu đề banner CTA"],
-      ["cta_subtitle", "Điền biểu mẫu trực tuyến để nhận tư vấn học bổng JASSO, MEXT và xét hồ sơ trao đổi", "オンラインフォームよりJASSO奨学金や交換留学選考のご相談を受け付けています", "Submit your online application for JASSO/MEXT scholarship consultation and university exchange screening", "cta", "Mô tả banner CTA"],
-      ["cta_button", "Đăng ký xét tuyển ngay", "今すぐ相談・出願する", "Apply for Consultation", "cta", "Nút CTA"],
-      ["about_intro", "Trung Tâm Hợp Tác Học Thuật Việt - Nhật trực thuộc Trường Đại học Mở TP.HCM có sứ mệnh đẩy mạnh nghiên cứu song phương, tổ chức các chương trình trao đổi học sinh - sinh viên sang các trường đại học hàng đầu tại Nhật Bản du học.", "日越学術協力センターは、ベトナムと日本の学術共同研究を促進し、日本の協定大学への学生交換留学プログラムを強力に支援しています。", "The Vietnam - Japan Academic Center is dedicated to advancing bilateral research cooperation and facilitating student exchange programs to top universities in Japan.", "about", "Đoạn giới thiệu đầu trang About"],
-      ["about_mission", "Xây dựng cầu nối học thuật bền vững giữa Việt Nam và Nhật Bản. Đào tạo sinh viên xuất sắc, trang bị năng lực tiếng Nhật học thuật và khả năng nghiên cứu khoa học để du học trao đổi thành công tại Nhật Bản.", "ベトナムと日本の強固な学術ネットワークを構築し、日本への交換留学を成功させる専門的学術日本語力と研究能力を備えた優秀な学生を育成します。", "Build enduring academic partnerships between Vietnam and Japan, nurturing students with academic Japanese proficiency and research capabilities.", "about", "Sứ mệnh"],
-      ["about_vision", "Trở thành trung tâm kiểu mẫu hàng đầu trong kết nối hợp tác giáo dục đại học, trao đổi học sinh - sinh viên và chuyển giao tri thức giữa các trường đại học Việt Nam và Nhật Bản.", "ベトナムと日本の大学間学術交流、交換留学、知識移転における先導的かつ模範的な教育協力センターを目指します。", "Become the premier center for higher education cooperation, student exchanges, and knowledge transfer between Vietnam and Japan.", "about", "Tầm nhìn"],
-      ["about_history_1", "Được thành lập trong khuôn khổ chiến lược quốc tế hóa giáo dục của Trường Đại học Mở TP.HCM, Trung Tâm Hợp Tác Học Thuật Việt - Nhật là cầu nối tin cậy hàng đầu cho sinh viên Việt Nam tiếp cận các chương trình trao đổi và học bổng du học Nhật Bản danh giá.", "ホーチミン市オープン大学の国際化推進戦略のもとで設立された日越学術協力センターは、ベトナム人学生が日本のトップ大学への交換留学および名誉ある奨学金を獲得するための信頼できる窓口です。", "Established under the internationalization strategy of HCMCOU, the Vietnam - Japan Academic Center serves as the premier bridge for students seeking exchange programs and prestigious scholarships in Japan.", "about", "Lịch sử đoạn 1"],
-      ["about_history_2", "Trung tâm liên tục mở rộng các chương trình học bổng JASSO, học bổng MEXT, hội thảo khoa học quốc tế song phương và các chuyến thực tập học thuật tại Nhật Bản, hỗ trợ tối đa cho sinh viên hiện thực hóa ước mơ du học.", "当センターでは、JASSO奨学金や国費留学生（MEXT）奨学金の支援、日越共同国際学術シンポジウム、日本での学術インターンシップを継続的に拡大しています。", "The Center actively expands JASSO scholarships, MEXT support, bilateral scientific conferences, and academic internships in Japan.", "about", "Lịch sử đoạn 2"],
-      ["contact_address", "97 Võ Văn Tần, Phường Võ Thị Sáu, Quận 3, TP.HCM", "97 Võ Văn Tần, Phường Võ Thị Sáu, Quận 3, TP.HCM", "97 Vo Van Tan, Vo Thi Sau Ward, District 3, HCMC", "contact", "Địa chỉ văn phòng"],
-      ["contact_phone", "(028) 3930 0089", "(028) 3930 0089", "(028) 3930 0089", "contact", "Số điện thoại hotline"],
-      ["contact_email", "vietnhat@ou.edu.vn", "vietnhat@ou.edu.vn", "vietnhat@ou.edu.vn", "contact", "Email liên hệ"],
-      ["contact_hours", "Thứ 2 - Thứ 6: 8:00 - 17:00", "月曜日〜金曜日: 8:00 - 17:00", "Monday - Friday: 8:00 AM - 5:00 PM", "contact", "Giờ tiếp sinh viên"],
-      ["social_facebook", "https://facebook.com/vietnhat.academic", "https://facebook.com/vietnhat.academic", "https://facebook.com/vietnhat.academic", "contact", "Link Facebook"],
-      ["social_youtube", "https://youtube.com/@vietnhat-exchange", "https://youtube.com/@vietnhat-exchange", "https://youtube.com/@vietnhat-exchange", "contact", "Link YouTube"],
+      ["badge", "Đại học Mở TP.HCM", "ホーチミン市オープン大学", "Ho Chi Minh City Open University", "Nhãn trường phía trên tiêu đề"],
+      ["main_title", "Trung Tâm Hợp Tác Học Thuật Việt - Nhật", "日越学術協力センター", "Vietnam - Japan Academic Center", "Tiêu đề lớn trang chủ"],
+      ["subtitle", "Cầu nối học thuật, nghiên cứu & trao đổi du học sinh Việt Nam sang Nhật Bản", "ベトナムと日本の学術研究・留学生交流をつなぐ架け橋", "Bridging Academic Excellence & Student Exchange between Vietnam and Japan", "Mô tả dưới tiêu đề chính"],
+      ["btn_explore", "Chương trình trao đổi", "交換留学プログラムを見る", "Explore Programs", "Nút bấm chính"],
+      ["btn_contact", "Đăng ký tư vấn du học", "留学相談を申し込む", "Contact Us", "Nút bấm phụ"],
+      ["card_tag", "Vietnam - Japan Academic Exchange", "Vietnam - Japan Academic Exchange", "Vietnam - Japan Academic Exchange", "Nhãn nhỏ trên thẻ Hero"],
+      ["card_title", "VIỆT NAM • NHẬT BẢN", "ベトナム • 日本", "VIETNAM • JAPAN", "Chữ lớn giữa thẻ Hero"],
+      ["card_subtitle", "Hợp tác học thuật & Trao đổi sinh viên du học", "学術協力・交換留学プログラム", "Academic Cooperation & Student Exchange", "Mô tả giữa thẻ Hero"],
+      ["stat_students_count", "500+", "500+", "500+", "Con số nổi góc thẻ Hero"],
+      ["stat_students", "Học viên mỗi năm", "年間留学生数", "Students per year", "Nhãn nổi góc thẻ Hero"],
+      ["section_features_title", "Chương trình trao đổi & Học bổng", "注目の交換留学＆奨学金", "Featured Exchange & Scholarships", "Tiêu đề mục Chương trình nổi bật"],
+      ["section_stats_title", "Thành tựu hợp tác", "交流の実績", "Our Cooperation Impact", "Tiêu đề mục Thành tựu"],
+      ["stat_students_value", "500", "500", "500", "Số sinh viên sang Nhật"],
+      ["stat_students_label", "Sinh viên đã sang Nhật", "渡日留学生数", "Exchange Students in Japan", "Nhãn thống kê 1"],
+      ["stat_programs_value", "20", "20", "20", "Số chương trình trao đổi"],
+      ["stat_programs_label", "Chương trình trao đổi", "交換プログラム数", "Exchange Programs", "Nhãn thống kê 2"],
+      ["stat_partners_value", "10", "10", "10", "Số ĐH đối tác Nhật Bản"],
+      ["stat_partners_label", "Đại học đối tác tại Nhật", "日本提携大学数", "Partner Universities in Japan", "Nhãn thống kê 3"],
+      ["stat_years_value", "15", "15", "15", "Số năm hợp tác"],
+      ["stat_years_label", "Năm hợp tác bền vững", "協力継続年数", "Years of Cooperation", "Nhãn thống kê 4"],
+      ["section_news_title", "Tin tức & Thông báo học thuật", "最新の学術ニュース・お知らせ", "Latest News", "Tiêu đề mục Tin tức"],
+      ["section_partners_title", "Đại học đối tác tại Nhật Bản", "日本の提携大学", "Partner Universities in Japan", "Tiêu đề mục Đối tác"],
+      ["btn_view_all", "Tất cả tin tức", "すべての記事を見る", "View All", "Nút xem tất cả tin tức"],
+      ["btn_read_more", "Xem thêm", "続きを読む", "Read More", "Nút đọc chi tiết"],
+      ["cta_title", "Bạn muốn du học trao đổi tại Nhật Bản?", "日本への交換留学を始めませんか？", "Ready for Your Academic Journey in Japan?", "Tiêu đề banner CTA cuối trang"],
+      ["cta_subtitle", "Điền biểu mẫu trực tuyến để nhận tư vấn học bổng JASSO, MEXT và xét hồ sơ trao đổi", "オンラインフォームよりJASSO奨学金や交換留学選考のご相談を受け付けています", "Submit your online application for JASSO/MEXT consultation", "Mô tả banner CTA"],
+      ["cta_button", "Đăng ký xét tuyển ngay", "今すぐ相談・出願する", "Apply for Consultation", "Nút banner CTA"],
+      ["contact_address", "97 Võ Văn Tần, Phường Võ Thị Sáu, Quận 3, TP.HCM", "97 Võ Văn Tần, Phường Võ Thị Sáu, Quận 3, TP.HCM", "97 Vo Van Tan, Vo Thi Sau Ward, District 3, HCMC", "Địa chỉ văn phòng"],
+      ["contact_phone", "(028) 3930 0089", "(028) 3930 0089", "(028) 3930 0089", "Số điện thoại"],
+      ["contact_email", "vietnhat@ou.edu.vn", "vietnhat@ou.edu.vn", "vietnhat@ou.edu.vn", "Email liên hệ"],
+      ["contact_hours", "Thứ 2 - Thứ 6: 8:00 - 17:00", "月曜日〜金曜日: 8:00 - 17:00", "Monday - Friday: 8:00 AM - 5:00 PM", "Giờ tiếp sinh viên"],
+      ["social_facebook", "https://facebook.com/vietnhat.academic", "https://facebook.com/vietnhat.academic", "https://facebook.com/vietnhat.academic", "Link Facebook"],
+      ["social_youtube", "https://youtube.com/@vietnhat-exchange", "https://youtube.com/@vietnhat-exchange", "https://youtube.com/@vietnhat-exchange", "Link YouTube"],
     ];
     rows.forEach(function (r) { sheet.appendRow(r); });
-  } else if (sheetName === SHEET_NAMES.PROGRAMS) {
+    formatTabSheet(sheet, headers.length);
+  } else if (tabName === TABS.ABOUT) {
+    const headers = ["key", "vi", "ja", "en", "note"];
+    sheet.appendRow(headers);
+    const rows = [
+      ["about_intro", "Trung Tâm Hợp Tác Học Thuật Việt - Nhật trực thuộc Trường Đại học Mở TP.HCM có sứ mệnh đẩy mạnh nghiên cứu song phương, tổ chức các chương trình trao đổi học sinh - sinh viên sang các trường đại học hàng đầu tại Nhật Bản du học.", "日越学術協力センターは、ベトナムと日本の学術共同研究を促進し、日本の協定大学への学生交換留学プログラムを強力に支援しています。", "The Vietnam - Japan Academic Center is dedicated to advancing bilateral research cooperation and facilitating student exchange programs to top universities in Japan.", "Đoạn giới thiệu đầu trang About"],
+      ["about_mission", "Xây dựng cầu nối học thuật bền vững giữa Việt Nam và Nhật Bản. Đào tạo sinh viên xuất sắc, trang bị năng lực tiếng Nhật học thuật và khả năng nghiên cứu khoa học để du học trao đổi thành công tại Nhật Bản.", "ベトナムと日本の強固な学術ネットワークを構築し、日本への交換留学を成功させる専門的学術日本語力と研究能力を備えた優秀な学生を育成します。", "Build enduring academic partnerships between Vietnam and Japan, nurturing students with academic Japanese proficiency and research capabilities.", "Sứ mệnh"],
+      ["about_vision", "Trở thành trung tâm kiểu mẫu hàng đầu trong kết nối hợp tác giáo dục đại học, trao đổi học sinh - sinh viên và chuyển giao tri thức giữa các trường đại học Việt Nam và Nhật Bản.", "ベトナムと日本の大学間学術交流、交換留学、知識移転における先導的かつ模範的な教育協力センターを目指します。", "Become the premier center for higher education cooperation, student exchanges, and knowledge transfer between Vietnam and Japan.", "Tầm nhìn"],
+      ["about_history_1", "Được thành lập trong khuôn khổ chiến lược quốc tế hóa giáo dục của Trường Đại học Mở TP.HCM, Trung Tâm Hợp Tác Học Thuật Việt - Nhật là cầu nối tin cậy hàng đầu cho sinh viên Việt Nam tiếp cận các chương trình trao đổi và học bổng du học Nhật Bản danh giá.", "ホーチミン市オープン大学の国際化推進戦略のもとで設立された日越学術協力センターは、ベトナム人学生が日本のトップ大学への交換留学および名誉ある奨学金を獲得するための信頼できる窓口です。", "Established under the internationalization strategy of HCMCOU, the Vietnam - Japan Academic Center serves as the premier bridge for students seeking exchange programs and prestigious scholarships in Japan.", "Lịch sử đoạn 1"],
+      ["about_history_2", "Trung tâm liên tục mở rộng các chương trình học bổng JASSO, học bổng MEXT, hội thảo khoa học quốc tế song phương và các chuyến thực tập học thuật tại Nhật Bản, hỗ trợ tối đa cho sinh viên hiện thực hóa ước mơ du học.", "当センターでは、JASSO奨学金や国費留学生（MEXT）奨学金の支援、日越共同国際学術シンポジウム、日本での学術インターンシップを継続的に拡大しています。", "The Center actively expands JASSO scholarships, MEXT support, bilateral scientific conferences, and academic internships in Japan.", "Lịch sử đoạn 2"],
+    ];
+    rows.forEach(function (r) { sheet.appendRow(r); });
+    formatTabSheet(sheet, headers.length);
+  } else if (tabName === TABS.PROGRAMS) {
     const headers = [
-      "id", "slug", "category",
-      "title_vi", "title_ja", "title_en",
-      "description_vi", "description_ja", "description_en",
-      "overview_vi", "overview_ja", "overview_en",
-      "requirement_vi", "requirement_ja", "requirement_en",
+      "slug", "category",
+      "title", "titleJa", "titleEn",
+      "description", "descriptionJa", "descriptionEn",
+      "overview", "overviewJa", "overviewEn",
+      "requirement", "requirementJa", "requirementEn",
       "duration", "features", "status", "order"
     ];
     sheet.appendRow(headers);
-    styleHeader(sheet, headers.length);
-
     const rows = [
       [
-        "PG-01", "exchange-program-tokyo", "exchange",
+        "exchange-program-tokyo", "exchange",
         "Chương trình trao đổi sinh viên ĐH Tokyo (UTokyo)",
         "東京大学（UTokyo）学生交換留学プログラム",
         "The University of Tokyo Student Exchange Program",
         "Cơ hội học tập và nghiên cứu 1-2 học kỳ tại trường đại học số 1 Nhật Bản. Công nhận tín chỉ tương đương và miễn học phí đối ứng.",
         "日本最高峰の東京大学で1〜2学期間学び、最先端の研究と文化交流を体験。単位互換および授業料相互免除。",
         "Study and research for 1-2 semesters at Japan's top university. Full credit transfer and reciprocal tuition waiver.",
-        "Sinh viên tham gia chương trình trao đổi tại Đại học Tokyo sẽ được học tập tại các khoa chuyên ngành bằng tiếng Nhật hoặc tiếng Anh, tiếp cận hệ thống phòng thí nghiệm hàng đầu châu Á và chuyển đổi tín chỉ về HCMCOU.",
+        "Sinh viên tham gia chương trình trao đổi tại Đại học Tokyo sẽ được học tập tại các khoa chuyên ngành bằng tiếng Nhật hoặc tiếng Anh, tiếp cận phòng thí nghiệm hàng đầu châu Á và chuyển đổi tín chỉ về HCMCOU.",
         "東京大学での交換留学では、日本語または英語で専門科目を履修し、アジア最高水準の研究環境と単位互換制度を活用できます。",
         "Exchange students at UTokyo enroll in specialized courses in Japanese or English with full academic advising and credit transfer back to HCMCOU.",
         "Sinh viên năm 2 trở lên, GPA từ 3.2/4.0, JLPT N2 hoặc IELTS 6.5.",
@@ -373,7 +396,7 @@ function initSampleSheet(ss, sheetName) {
         true, 1
       ],
       [
-        "PG-02", "exchange-program-kyoto", "exchange",
+        "exchange-program-kyoto", "exchange",
         "Trao đổi học thuật & Nghiên cứu ĐH Kyoto",
         "京都大学 学術・研究交換留学プログラム",
         "Kyoto University Academic & Research Exchange",
@@ -391,7 +414,7 @@ function initSampleSheet(ss, sheetName) {
         true, 2
       ],
       [
-        "PG-03", "exchange-program-osaka", "exchange",
+        "exchange-program-osaka", "exchange",
         "Chương trình trao đổi sinh viên ĐH Osaka",
         "大阪大学 学生交換留学プログラム",
         "Osaka University Student Exchange",
@@ -409,7 +432,7 @@ function initSampleSheet(ss, sheetName) {
         true, 3
       ],
       [
-        "PG-04", "scholarship-jasso-japan", "scholarship",
+        "scholarship-jasso-japan", "scholarship",
         "Học bổng trao đổi sinh viên JASSO",
         "日本学生支援機構（JASSO）留学生受入支援奨学金",
         "JASSO Student Exchange Support Scholarship",
@@ -427,7 +450,7 @@ function initSampleSheet(ss, sheetName) {
         true, 4
       ],
       [
-        "PG-05", "scholarship-mext-japan", "scholarship",
+        "scholarship-mext-japan", "scholarship",
         "Học bổng Chính phủ Nhật Bản (MEXT)",
         "文部科学省（MEXT）日本政府国費留学生奨学金",
         "MEXT Japanese Government Scholarship",
@@ -445,7 +468,7 @@ function initSampleSheet(ss, sheetName) {
         true, 5
       ],
       [
-        "PG-06", "japanese-academic-n2-n1", "japanese",
+        "japanese-academic-n2-n1", "japanese",
         "Khóa đào tạo Tiếng Nhật Học thuật & Luyện thi N2/N1",
         "アカデミック日本語＆JLPT N2/N1対策集中講座",
         "Academic Japanese & JLPT N2/N1 Intensive Course",
@@ -464,20 +487,19 @@ function initSampleSheet(ss, sheetName) {
       ],
     ];
     rows.forEach(function (r) { sheet.appendRow(r); });
-  } else if (sheetName === SHEET_NAMES.NEWS) {
+    formatTabSheet(sheet, headers.length);
+  } else if (tabName === TABS.NEWS) {
     const headers = [
-      "id", "slug", "category", "date", "featured",
-      "title_vi", "title_ja", "title_en",
-      "excerpt_vi", "excerpt_ja", "excerpt_en",
-      "content_vi", "content_ja", "content_en",
+      "slug", "category", "date", "featured",
+      "title", "titleJa", "titleEn",
+      "excerpt", "excerptJa", "excerptEn",
+      "content", "contentJa", "contentEn",
       "status"
     ];
     sheet.appendRow(headers);
-    styleHeader(sheet, headers.length);
-
     const rows = [
       [
-        "NW-01", "tuyen-sinh-trao-doi-sinh-vien-nhat-ban-2027", "announcement", "2026-10-12", true,
+        "tuyen-sinh-trao-doi-sinh-vien-nhat-ban-2027", "announcement", "2026-10-12", true,
         "Thông báo tuyển chọn sinh viên tham gia chương trình trao đổi tại Nhật Bản năm học 2027",
         "2027年度 日本の提携大学への交換留学生募集開始のお知らせ",
         "Call for Applications: Student Exchange Program in Japan Academic Year 2027",
@@ -490,7 +512,7 @@ function initSampleSheet(ss, sheetName) {
         true
       ],
       [
-        "NW-02", "hoi-thao-khoa-hoc-viet-nhat-2026", "event", "2026-10-05", false,
+        "hoi-thao-khoa-hoc-viet-nhat-2026", "event", "2026-10-05", false,
         "Hội thảo quốc tế: Hợp tác nghiên cứu & Chuyển giao công nghệ Việt Nam - Nhật Bản",
         "国際シンポジウム：日越学術共同研究および先端技術移転",
         "International Conference: Vietnam - Japan Academic Research & Technology Transfer",
@@ -503,7 +525,7 @@ function initSampleSheet(ss, sheetName) {
         true
       ],
       [
-        "NW-03", "hoc-bong-jasso-ky-xuan-2027", "scholarship", "2026-09-28", false,
+        "hoc-bong-jasso-ky-xuan-2027", "scholarship", "2026-09-28", false,
         "Hướng dẫn nộp hồ sơ xin học bổng JASSO kỳ mùa Xuân 2027",
         "2027年春学期 JASSO留学生受入支援奨学金 申請ガイド",
         "Guide for JASSO Student Exchange Support Scholarship Spring 2027",
@@ -516,7 +538,7 @@ function initSampleSheet(ss, sheetName) {
         true
       ],
       [
-        "NW-04", "kinh-nghiem-du-hoc-sinh-viet-tai-tokyo", "event", "2026-09-15", false,
+        "kinh-nghiem-du-hoc-sinh-viet-tai-tokyo", "event", "2026-09-15", false,
         "Chia sẻ kinh nghiệm: Hành trình 1 năm trao đổi học thuật tại Đại học Tokyo của cựu sinh viên",
         "先輩留学生の声：東京大学での1年間にわたる交換留学体験記",
         "Alumni Story: One Year of Academic Exchange at The University of Tokyo",
@@ -529,7 +551,7 @@ function initSampleSheet(ss, sheetName) {
         true
       ],
       [
-        "NW-05", "huong-dan-xin-coe-va-visa-du-hoc-nhat", "announcement", "2026-09-02", false,
+        "huong-dan-xin-coe-va-visa-du-hoc-nhat", "announcement", "2026-09-02", false,
         "Cẩm nang thủ tục cấp Giấy chứng nhận tư cách lưu trú (COE) và Visa du học Nhật Bản",
         "在留資格認定証明書（COE）交付および日本留学ビザ申請手引き",
         "Handbook on COE and Student Visa Procedures for Japan",
@@ -543,51 +565,52 @@ function initSampleSheet(ss, sheetName) {
       ],
     ];
     rows.forEach(function (r) { sheet.appendRow(r); });
-  } else if (sheetName === SHEET_NAMES.FACULTY) {
+    formatTabSheet(sheet, headers.length);
+  } else if (tabName === TABS.FACULTY) {
     const headers = [
-      "id",
-      "name_vi", "name_ja", "name_en",
-      "title_vi", "title_ja", "title_en",
+      "name", "nameJa", "nameEn",
+      "title", "titleJa", "titleEn",
       "specialization",
-      "bio_vi", "bio_ja", "bio_en",
+      "bio", "bioJa", "bioEn",
       "status", "order"
     ];
     sheet.appendRow(headers);
-    styleHeader(sheet, headers.length);
-
     const rows = [
-      ["FC-01", "PGS.TS. Nguyễn Văn An", "グエン・ヴァン・アン 准教授・博士", "Assoc. Prof. Dr. Nguyen Van An", "Giám đốc Trung tâm Hợp tác Học thuật Việt - Nhật", "日越学術協力センター長", "Director of Vietnam - Japan Academic Center", "Hợp tác học thuật quốc tế Việt - Nhật", "Hơn 20 năm nghiên cứu và giảng dạy, Tiến sĩ tu nghiệp tại Đại học Tokyo, chuyên gia xúc tiến hợp tác giáo dục đại học Việt Nam - Nhật Bản.", "東京大学博士号取得。20年以上の研究・教育実績を持ち、日越大学間学術交流推進の第一人者。", "Over 20 years in academia, PhD from The University of Tokyo, leading expert in Vietnam-Japan higher education cooperation.", true, 1],
-      ["FC-02", "GS.TS. Tanaka Kenji", "田中 健次 教授・博士", "Prof. Dr. Tanaka Kenji", "Cố vấn cấp cao Ban Hợp tác Đại học Nhật Bản", "日本協定大学学術連携 顧問", "Senior Advisor for Japanese University Partnerships", "Nghiên cứu & Đối tác Đại học Nhật Bản", "Nguyên Giáo sư tại Đại học Kyoto, cố vấn chiến lược kết nối trao đổi sinh viên và các dự án nghiên cứu song phương.", "京都大学名誉教授。日越共同研究および交換留学プログラムの戦略的連携を総括。", "Former Professor at Kyoto University, strategic advisor for bilateral student exchange and research initiatives.", true, 2],
-      ["FC-03", "TS. Yamamoto Sayaka", "山本 さやか 博士", "Dr. Yamamoto Sayaka", "Trưởng bộ phận Tiếng Nhật Học thuật", "アカデミック日本語教育 主任", "Head of Academic Japanese Department", "Tiếng Nhật học thuật & Báo cáo khoa học", "Tiến sĩ Ngôn ngữ học từ Đại học Osaka, chuyên gia đào tạo tiếng Nhật học thuật phục vụ viết báo cáo khoa học và thuyết trình hội thảo.", "大阪大学大学院博士課程修了。論文執筆および学会発表に向けた学術日本語教育の専門家。", "PhD in Linguistics from Osaka University, expert in academic Japanese writing and conference presentations.", true, 3],
-      ["FC-04", "ThS. Lê Hoàng Nam", "レ・ホアン・ナム 修士", "MA. Le Hoang Nam", "Điều phối viên Chương trình Trao đổi Sinh viên", "交換留学プログラム コーディネーター", "Student Exchange Program Coordinator", "Học bổng JASSO & Quản lý chương trình trao đổi", "Thạc sĩ Đại học Tohoku (Học bổng MEXT), JLPT N1, phụ trách hướng dẫn hồ sơ xin học bổng JASSO và xét tuyển trao đổi trường Nhật.", "東北大学大学院修了（国費留学生）、JLPT N1。JASSO奨学金および協定校推薦業務を担当。", "Master's from Tohoku University (MEXT scholar), JLPT N1, manages JASSO scholarship and exchange partner applications.", true, 4],
-      ["FC-05", "TS. Sato Hiroshi", "佐藤 浩 博士", "Dr. Sato Hiroshi", "Cố vấn Đề cương Nghiên cứu & Phỏng vấn Giáo sư", "研究計画書・指導教員面談 指導教授", "Research Proposal & Professor Interview Mentor", "Cố vấn học thuật & Học bổng du học Nhật", "Nhiều năm kinh nghiệm trong hội đồng tuyển chọn học bổng du học Nhật Bản, hướng dẫn sinh viên viết Study Plan và phỏng vấn.", "日本留学奨学金選考委員を歴任。研究計画書のブラッシュアップおよび面接対策を直接指導。", "Years of experience on Japanese scholarship selection panels, mentoring students on Study Plans and academic interviews.", true, 5],
-      ["FC-06", "ThS. Vũ Thị Mai Anh", "ヴ・ティ・マイ・アイン 修士", "MA. Vu Thi Mai Anh", "Chuyên viên Visa COE & Hỗ trợ Đời sống Du học sinh", "在留資格（COE）・留学生生活支援 専門員", "COE Visa Specialist & Exchange Student Support", "Thủ tục COE, Visa & Hướng nghiệp Nhật Bản", "Thạc sĩ Đại học Waseda, chuyên trách hoàn thiện thủ tục cấp COE, visa du học Nhật Bản và hỗ trợ định hướng sinh viên trước khi bay.", "早稲田大学大学院修了。COE申請、留学ビザ手続きおよび渡航前オリエンテーションを専門担当。", "Master's from Waseda University, specialist in COE clearance, student visa procedures, and pre-departure orientations.", true, 6],
+      ["PGS.TS. Nguyễn Văn An", "グエン・ヴァン・アン 准教授・博士", "Assoc. Prof. Dr. Nguyen Van An", "Giám đốc Trung tâm Hợp tác Học thuật Việt - Nhật", "日越学術協力センター長", "Director of Vietnam - Japan Academic Center", "Hợp tác học thuật quốc tế Việt - Nhật", "Hơn 20 năm nghiên cứu và giảng dạy, Tiến sĩ tu nghiệp tại Đại học Tokyo, chuyên gia xúc tiến hợp tác giáo dục đại học Việt Nam - Nhật Bản.", "東京大学博士号取得。20年以上の研究・教育実績を持ち、日越大学間学術交流推進の第一人者。", "Over 20 years in academia, PhD from The University of Tokyo, leading expert in Vietnam-Japan higher education cooperation.", true, 1],
+      ["GS.TS. Tanaka Kenji", "田中 健次 教授・博士", "Prof. Dr. Tanaka Kenji", "Cố vấn cấp cao Ban Hợp tác Đại học Nhật Bản", "日本協定大学学術連携 顧問", "Senior Advisor for Japanese University Partnerships", "Nghiên cứu & Đối tác Đại học Nhật Bản", "Nguyên Giáo sư tại Đại học Kyoto, cố vấn chiến lược kết nối trao đổi sinh viên và các dự án nghiên cứu song phương.", "京都大学名誉教授。日越共同研究および交換留学プログラムの戦略的連携を総括。", "Former Professor at Kyoto University, strategic advisor for bilateral student exchange and research initiatives.", true, 2],
+      ["TS. Yamamoto Sayaka", "山本 さやか 博士", "Dr. Yamamoto Sayaka", "Trưởng bộ phận Tiếng Nhật Học thuật", "アカデミック日本語教育 主任", "Head of Academic Japanese Department", "Tiếng Nhật học thuật & Báo cáo khoa học", "Tiến sĩ Ngôn ngữ học từ Đại học Osaka, chuyên gia đào tạo tiếng Nhật học thuật phục vụ viết báo cáo khoa học và thuyết trình hội thảo.", "大阪大学大学院博士課程修了。論文執筆および学会発表に向けた学術日本語教育の専門家。", "PhD in Linguistics from Osaka University, expert in academic Japanese writing and conference presentations.", true, 3],
+      ["ThS. Lê Hoàng Nam", "レ・ホアン・ナム 修士", "MA. Le Hoang Nam", "Điều phối viên Chương trình Trao đổi Sinh viên", "交換留学プログラム コーディネーター", "Student Exchange Program Coordinator", "Học bổng JASSO & Quản lý chương trình trao đổi", "Thạc sĩ Đại học Tohoku (Học bổng MEXT), JLPT N1, phụ trách hướng dẫn hồ sơ xin học bổng JASSO và xét tuyển trao đổi trường Nhật.", "東北大学大学院修了（国費留学生）、JLPT N1。JASSO奨学金および協定校推薦業務を担当。", "Master's from Tohoku University (MEXT scholar), JLPT N1, manages JASSO scholarship and exchange partner applications.", true, 4],
+      ["TS. Sato Hiroshi", "佐藤 浩 博士", "Dr. Sato Hiroshi", "Cố vấn Đề cương Nghiên cứu & Phỏng vấn Giáo sư", "研究計画書・指導教員面談 指導教授", "Research Proposal & Professor Interview Mentor", "Cố vấn học thuật & Học bổng du học Nhật", "Nhiều năm kinh nghiệm trong hội đồng tuyển chọn học bổng du học Nhật Bản, hướng dẫn sinh viên viết Study Plan và phỏng vấn.", "日本留学奨学金選考委員を歴任。研究計画書のブラッシュアップおよび面接対策を直接指導。", "Years of experience on Japanese scholarship selection panels, mentoring students on Study Plans and academic interviews.", true, 5],
+      ["ThS. Vũ Thị Mai Anh", "ヴ・ティ・マイ・アイン 修士", "MA. Vu Thi Mai Anh", "Chuyên viên Visa COE & Hỗ trợ Đời sống Du học sinh", "在留資格（COE）・留学生生活支援 専門員", "COE Visa Specialist & Exchange Student Support", "Thủ tục COE, Visa & Hướng nghiệp Nhật Bản", "Thạc sĩ Đại học Waseda, chuyên trách hoàn thiện thủ tục cấp COE, visa du học Nhật Bản và hỗ trợ định hướng sinh viên trước khi bay.", "早稲田大学大学院修了。COE申請、留学ビザ手続きおよび渡航前オリエンテーションを専門担当。", "Master's from Waseda University, specialist in COE clearance, student visa procedures, and pre-departure orientations.", true, 6],
     ];
     rows.forEach(function (r) { sheet.appendRow(r); });
-  } else if (sheetName === SHEET_NAMES.APPLICATIONS) {
+    formatTabSheet(sheet, headers.length);
+  } else if (tabName === TABS.PARTNERS) {
+    const headers = ["name", "country", "countryJa", "countryEn", "status", "order"];
+    sheet.appendRow(headers);
+    const rows = [
+      ["The University of Tokyo", "🇯🇵 Tokyo, Nhật Bản", "🇯🇵 東京・日本", "🇯🇵 Tokyo, Japan", true, 1],
+      ["Kyoto University", "🇯🇵 Kyoto, Nhật Bản", "🇯🇵 京都・日本", "🇯🇵 Kyoto, Japan", true, 2],
+      ["Osaka University", "🇯🇵 Osaka, Nhật Bản", "🇯🇵 大阪・日本", "🇯🇵 Osaka, Japan", true, 3],
+      ["Tohoku University", "🇯🇵 Sendai, Nhật Bản", "🇯🇵 仙台・日本", "🇯🇵 Sendai, Japan", true, 4],
+      ["Nagoya University", "🇯🇵 Nagoya, Nhật Bản", "🇯🇵 名古屋・日本", "🇯🇵 Nagoya, Japan", true, 5],
+      ["Waseda University", "🇯🇵 Tokyo, Nhật Bản", "🇯🇵 東京・日本", "🇯🇵 Tokyo, Japan", true, 6],
+    ];
+    rows.forEach(function (r) { sheet.appendRow(r); });
+    formatTabSheet(sheet, headers.length);
+  } else if (tabName === TABS.ADMISSIONS) {
     const headers = [
-      "Thời gian đăng ký",
-      "Họ và tên",
-      "Email",
-      "Số điện thoại",
-      "Chương trình quan tâm",
-      "Trình độ tiếng Nhật",
-      "Lời nhắn / Nguyện vọng",
-      "Trạng thái"
+      "Thời gian đăng ký", "Họ và tên", "Email", "Số điện thoại",
+      "Chương trình quan tâm", "Trình độ tiếng Nhật", "Lời nhắn / Nguyện vọng", "Trạng thái"
     ];
     sheet.appendRow(headers);
-    styleHeader(sheet, headers.length);
-  } else if (sheetName === SHEET_NAMES.CONTACTS) {
+    formatTabSheet(sheet, headers.length);
+  } else if (tabName === TABS.CONTACT) {
     const headers = [
-      "Thời gian gửi",
-      "Họ và tên",
-      "Email",
-      "Chủ đề",
-      "Nội dung thắc mắc",
-      "Trạng thái"
+      "Thời gian gửi", "Họ và tên", "Email", "Chủ đề", "Nội dung thắc mắc", "Trạng thái"
     ];
     sheet.appendRow(headers);
-    styleHeader(sheet, headers.length);
+    formatTabSheet(sheet, headers.length);
   }
 
   return sheet;

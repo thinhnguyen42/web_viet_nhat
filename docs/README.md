@@ -18,6 +18,7 @@ Tài liệu kỹ thuật và nhật ký các phiên làm việc (work sessions) 
 - [2026-11-23-session-01-classical-lazy-loading.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-01-classical-lazy-loading.md) — Phiên 01: Khảo sát dự án, build & kiểm thử ban đầu, triển khai Classical Vietnam–Japan Lazy Loading & Opening Curtain.
 - [2026-11-23-session-02-google-sheet-cms.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-02-google-sheet-cms.md) — Phiên 02: Kế thừa cấu trúc dự án Việt - Hàn, triển khai Google Sheet CMS 6 tab đa ngôn ngữ, route dự phòng `/news/detail` & `/programs/detail`, `/healthz` Nginx, dọn sạch ESLint và đạt 8/8 Playwright tests.
 - [2026-11-23-session-03-github-push-and-azure-check.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-03-github-push-and-azure-check.md) — Phiên 03: Kiểm tra tài nguyên Azure VM (`ZaloOaBot`) từ `pm2 list` và đẩy toàn bộ mã nguồn lên `https://github.com/thinhnguyen42/web_viet_nhat.git` (nhánh `main`).
+- [2026-11-23-session-04-sheet-doGet-alignment.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-04-sheet-doGet-alignment.md) — Phiên 04: Chuẩn hóa Apps Script theo `?sheet=` + 8 tab thân thiện (`home`, `about`, `programs`, `news`, `faculty`, `partners`, `admissions`, `contact`) gắn ID Sheet `1v-WuSh5M3V1az6970Y8sP6OhOUoAeTYhHy6MS73zVRU`.
 
 ## Quy tắc cập nhật tài liệu
 
