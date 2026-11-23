@@ -25,6 +25,7 @@ Tài liệu kỹ thuật và nhật ký các phiên làm việc (work sessions) 
 - [2026-11-23-session-07-json-content-and-3-image-folders.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-07-json-content-and-3-image-folders.md) — Phiên 07: Tách toàn bộ nội dung ra 7 file JSON trong `src/content/`, tổ chức 3 thư mục ảnh (`public/images/website`, `introductions`, `programs-news`), render toàn bộ qua React `.map()` + `next/image` (0 lint errors/warnings, 8/8 Playwright passed).
 - [2026-11-23-session-08-workflow-and-featured-fixes.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-08-workflow-and-featured-fixes.md) — Phiên 08: Kiểm toán Workflow, sửa nhận `1`/`0` cho `featured` & `Hiển thị`, làm nổi bật tin tiêu điểm và hoàn thiện [WORKFLOW.md](file:///D:/Học%20tập/Web_Viet_Nhat/WORKFLOW.md) bản Demo.
 - [2026-11-23-session-09-vija-branch-and-403-block.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-09-vija-branch-and-403-block.md) — Phiên 09: Tạo nhánh `vija` từ `webvn` (`640fc8a`), giữ nguyên `main` (`198391e`), ghi nhận lỗi `HTTP 403` khi push lên `Smart-Home-SH/demowebou.git`.
+- [2026-11-23-session-10-push-personal-vija.md](file:///D:/Học%20tập/Web_Viet_Nhat/docs/sessions/2026-11-23-session-10-push-personal-vija.md) — Phiên 10: Đẩy thành công nhánh `vija` lên `https://github.com/thinhnguyen42/web_viet_nhat.git` (`personal/vija`), giữ nguyên nhánh `main`.
 
 ## Quy tắc cập nhật tài liệu
 
