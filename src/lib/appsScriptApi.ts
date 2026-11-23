@@ -106,16 +106,20 @@ export interface SheetNewsRow {
   title_en?: string;
   excerpt?: string;
   excerpt_vi?: string;
+  "excerpt VI"?: string;
   excerptJa?: string;
   excerpt_ja?: string;
   excerptEn?: string;
   excerpt_en?: string;
+  "excerpt EN"?: string;
   content?: string;
   content_vi?: string;
+  "content VI"?: string;
   contentJa?: string;
   content_ja?: string;
   contentEn?: string;
   content_en?: string;
+  "content EN"?: string;
   image?: string;
   status?: boolean | string;
 }
@@ -284,7 +288,7 @@ export function normalizeProgramsFromSheet(rows: SheetProgramRow[]): Program[] {
         requirementEn: String(row.requirementEn || row.requirement_en || "").trim() || undefined,
         requirementJa: String(row.requirementJa || row.requirement_ja || "").trim() || undefined,
         duration: String(row.duration || "1 - 2 học kỳ").trim(),
-        image: String(row.image || "/images/placeholder/program-exchange-1.jpg").trim(),
+        image: String(row.image || "/images/programs-news/program-exchange.svg").trim(),
         features: parseFeatures(row.features),
         status: true,
         order: toNumber(row.order),
@@ -301,11 +305,11 @@ export function normalizeNewsFromSheet(rows: SheetNewsRow[]): NewsArticle[] {
       const titleVi = String(row.title_vi || row.title || "").trim();
       const titleEn = String(row.titleEn || row.title_en || "").trim() || titleVi;
       const titleJa = String(row.titleJa || row.title_ja || "").trim() || titleVi;
-      const excerptVi = String(row.excerpt_vi || row.excerpt || "").trim();
-      const excerptEn = String(row.excerptEn || row.excerpt_en || "").trim() || excerptVi;
+      const excerptVi = String(row["excerpt VI"] || row.excerpt_vi || row.excerpt || "").trim();
+      const excerptEn = String(row["excerpt EN"] || row.excerptEn || row.excerpt_en || "").trim() || excerptVi;
       const excerptJa = String(row.excerptJa || row.excerpt_ja || "").trim() || excerptVi;
-      const contentVi = String(row.content_vi || row.content || excerptVi).trim();
-      const contentEn = String(row.contentEn || row.content_en || "").trim() || contentVi;
+      const contentVi = String(row["content VI"] || row.content_vi || row.content || excerptVi).trim();
+      const contentEn = String(row["content EN"] || row.contentEn || row.content_en || "").trim() || contentVi;
       const contentJa = String(row.contentJa || row.content_ja || "").trim() || contentVi;
       const slug = String(row.slug || "").trim() || slugifyVietnamese(titleVi);
 
@@ -322,7 +326,7 @@ export function normalizeNewsFromSheet(rows: SheetNewsRow[]): NewsArticle[] {
         contentJa,
         category: normalizeNewsCategory(row.category),
         date: String(row.date || "").trim() || "2026-11-23",
-        image: String(row.image || "/images/placeholder/news-1.jpg").trim(),
+        image: String(row.image || "/images/programs-news/news-announcement.svg").trim(),
         featured: toBoolean(row.featured),
         status: true,
       };
@@ -361,7 +365,7 @@ export function normalizeFacultyFromSheet(
         bioJa: String(row["Mô tả JA"] || row.bioJa || row.bio_ja || "").trim() || bioVi,
         unit: String(row["Đơn vị VI"] || "").trim() || undefined,
         unitEn: String(row["Đơn vị EN"] || "").trim() || undefined,
-        image: String(row.image || "/images/placeholder/faculty-1.jpg").trim(),
+        image: String(row.image || "/images/introductions/faculty-avatar.svg").trim(),
         order: toNumber(row.order ?? row.ID),
       };
     })

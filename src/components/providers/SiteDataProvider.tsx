@@ -12,6 +12,7 @@ import {
 import { programs as staticPrograms, type Program } from "@/data/programs";
 import { newsArticles as staticNews, type NewsArticle } from "@/data/news";
 import { facultyMembers as staticFaculty, type FacultyMember } from "@/data/faculty";
+import homeJson from "@/content/home.json";
 import type { Locale } from "@/data/i18n";
 import {
   fetchAllSiteData,
@@ -22,14 +23,7 @@ import {
 const STATIC_PROGRAM_SLUGS = new Set(staticPrograms.map((p) => p.slug));
 const STATIC_NEWS_SLUGS = new Set(staticNews.map((n) => n.slug));
 
-const defaultPartners: PartnerItem[] = [
-  { name: "The University of Tokyo", country: "🇯🇵 Tokyo, Nhật Bản", countryJa: "🇯🇵 東京・日本", countryEn: "🇯🇵 Tokyo, Japan" },
-  { name: "Kyoto University", country: "🇯🇵 Kyoto, Nhật Bản", countryJa: "🇯🇵 京都・日本", countryEn: "🇯🇵 Kyoto, Japan" },
-  { name: "Osaka University", country: "🇯🇵 Osaka, Nhật Bản", countryJa: "🇯🇵 大阪・日本", countryEn: "🇯🇵 Osaka, Japan" },
-  { name: "Tohoku University", country: "🇯🇵 Sendai, Nhật Bản", countryJa: "🇯🇵 仙台・日本", countryEn: "🇯🇵 Sendai, Japan" },
-  { name: "Nagoya University", country: "🇯🇵 Nagoya, Nhật Bản", countryJa: "🇯🇵 名古屋・日本", countryEn: "🇯🇵 Nagoya, Japan" },
-  { name: "Waseda University", country: "🇯🇵 Tokyo, Nhật Bản", countryJa: "🇯🇵 東京・日本", countryEn: "🇯🇵 Tokyo, Japan" },
-];
+const defaultPartners: PartnerItem[] = homeJson.partners;
 
 interface SiteDataContextValue {
   programs: Program[];

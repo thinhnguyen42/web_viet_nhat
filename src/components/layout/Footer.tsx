@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Phone, Mail, MapPin } from "lucide-react";
 import Container from "./Container";
-import { siteConfig, navItems } from "@/data/site";
+import { brandConfig, footerPrograms, navItems, siteConfig } from "@/data/site";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { useSiteData } from "@/components/providers/SiteDataProvider";
 import { FacebookIcon, YoutubeIcon } from "@/components/ui/SocialIcons";
@@ -18,6 +18,12 @@ export default function Footer() {
   const facebook = getConfigText("social_facebook", locale, siteConfig.social.facebook);
   const youtube = getConfigText("social_youtube", locale, siteConfig.social.youtube);
 
+  const contactItems = [
+    { icon: MapPin, text: address },
+    { icon: Phone, text: phone },
+    { icon: Mail, text: email },
+  ];
+
   return (
     <footer className="bg-primary-900 text-white mt-auto">
       <Container className="py-12 md:py-16">
@@ -26,12 +32,14 @@ export default function Footer() {
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-lg bg-accent-400 flex items-center justify-center text-primary-900 font-heading font-bold text-lg">
-                VNJ
+                {brandConfig.code}
               </div>
               <div>
-                <p className="font-heading font-bold text-sm">Trung Tâm</p>
+                <p className="font-heading font-bold text-sm">
+                  {brandConfig.top[locale]}
+                </p>
                 <p className="font-heading font-semibold text-xs text-primary-200">
-                  Học Thuật Việt - Nhật
+                  {brandConfig.bottom[locale]}
                 </p>
               </div>
             </div>
@@ -72,7 +80,7 @@ export default function Footer() {
                     href={item.href}
                     className="text-primary-200 hover:text-white text-sm transition-colors"
                   >
-                    {item.label}
+                    {t.nav[item.key as keyof typeof t.nav] || item.label}
                   </Link>
                 </li>
               ))}
@@ -85,30 +93,16 @@ export default function Footer() {
               {t.footer.programs}
             </h3>
             <ul className="space-y-2">
-              <li>
-                <Link
-                  href="/programs"
-                  className="text-primary-200 hover:text-white text-sm transition-colors"
-                >
-                  🎓 Học bổng JASSO & MEXT
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/programs"
-                  className="text-primary-200 hover:text-white text-sm transition-colors"
-                >
-                  🇯🇵 Trao đổi ĐH Tokyo & Kyoto
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/programs"
-                  className="text-primary-200 hover:text-white text-sm transition-colors"
-                >
-                  📚 Tiếng Nhật học thuật N2/N1
-                </Link>
-              </li>
+              {footerPrograms.map((prog, i) => (
+                <li key={i}>
+                  <Link
+                    href={prog.href}
+                    className="text-primary-200 hover:text-white text-sm transition-colors"
+                  >
+                    {prog[locale]}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -118,18 +112,12 @@ export default function Footer() {
               {t.footer.contactInfo}
             </h3>
             <ul className="space-y-3">
-              <li className="flex gap-3 text-sm text-primary-200">
-                <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
-                <span>{address}</span>
-              </li>
-              <li className="flex gap-3 text-sm text-primary-200">
-                <Phone className="w-4 h-4 mt-0.5 shrink-0" />
-                <span>{phone}</span>
-              </li>
-              <li className="flex gap-3 text-sm text-primary-200">
-                <Mail className="w-4 h-4 mt-0.5 shrink-0" />
-                <span>{email}</span>
-              </li>
+              {contactItems.map((item, i) => (
+                <li key={i} className="flex gap-3 text-sm text-primary-200">
+                  <item.icon className="w-4 h-4 mt-0.5 shrink-0" />
+                  <span>{item.text}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

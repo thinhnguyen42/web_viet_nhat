@@ -6,8 +6,9 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Container from "./Container";
-import { navItems } from "@/data/site";
+import { brandConfig, languages, navItems } from "@/data/site";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import type { Locale } from "@/data/i18n";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -20,16 +21,6 @@ export default function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const navLabels = [
-    t.nav.home,
-    t.nav.about,
-    t.nav.programs,
-    t.nav.news,
-    t.nav.faculty,
-    t.nav.admissions,
-    t.nav.contact,
-  ];
 
   return (
     <header
@@ -48,24 +39,25 @@ export default function Header() {
             className="flex items-center gap-3 group"
           >
             <div className="w-10 h-10 rounded-lg bg-primary-500 flex items-center justify-center text-white font-heading font-bold text-lg group-hover:bg-primary-600 transition-colors">
-              VNJ
+              {brandConfig.code}
             </div>
             <div className="hidden sm:block">
               <p className="font-heading font-bold text-sm leading-tight text-primary-900">
-                {locale === "vi" ? "Trung Tâm" : locale === "ja" ? "センター" : "Center"}
+                {brandConfig.top[locale]}
               </p>
               <p className="font-heading font-semibold text-xs text-primary-600">
-                {locale === "vi" ? "Học Thuật Việt - Nhật" : locale === "ja" ? "日越学術協力" : "Vietnam - Japan Academic"}
+                {brandConfig.bottom[locale]}
               </p>
             </div>
           </Link>
 
           {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-1">
-            {navItems.map((item, i) => {
+            {navItems.map((item) => {
               const isActive =
                 pathname === item.href ||
                 (item.href !== "/" && pathname.startsWith(item.href));
+              const label = t.nav[item.key as keyof typeof t.nav] || item.label;
               return (
                 <Link
                   key={item.href}
@@ -76,7 +68,7 @@ export default function Header() {
                       : "text-neutral-700 hover:text-primary-500 hover:bg-neutral-50"
                   }`}
                 >
-                  {navLabels[i]}
+                  {label}
                 </Link>
               );
             })}
@@ -85,39 +77,20 @@ export default function Header() {
           {/* Language Selector + Mobile Menu Button */}
           <div className="flex items-center gap-2">
             <div className="flex items-center bg-neutral-100/90 p-0.5 rounded-xl border border-neutral-200/80 text-xs font-semibold">
-              <button
-                onClick={() => setLocale("vi")}
-                className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
-                  locale === "vi"
-                    ? "bg-white text-primary-700 shadow-sm"
-                    : "text-neutral-500 hover:text-neutral-900"
-                }`}
-                title="Tiếng Việt"
-              >
-                🇻🇳 VI
-              </button>
-              <button
-                onClick={() => setLocale("ja")}
-                className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
-                  locale === "ja"
-                    ? "bg-white text-primary-700 shadow-sm"
-                    : "text-neutral-500 hover:text-neutral-900"
-                }`}
-                title="日本語"
-              >
-                🇯🇵 日
-              </button>
-              <button
-                onClick={() => setLocale("en")}
-                className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
-                  locale === "en"
-                    ? "bg-white text-primary-700 shadow-sm"
-                    : "text-neutral-500 hover:text-neutral-900"
-                }`}
-                title="English"
-              >
-                🇬🇧 EN
-              </button>
+              {languages.map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => setLocale(lang.code as Locale)}
+                  className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                    locale === lang.code
+                      ? "bg-white text-primary-700 shadow-sm"
+                      : "text-neutral-500 hover:text-neutral-900"
+                  }`}
+                  title={lang.title}
+                >
+                  {lang.label}
+                </button>
+              ))}
             </div>
 
             <button
@@ -151,6 +124,7 @@ export default function Header() {
                   const isActive =
                     pathname === item.href ||
                     (item.href !== "/" && pathname.startsWith(item.href));
+                  const label = t.nav[item.key as keyof typeof t.nav] || item.label;
                   return (
                     <motion.div
                       key={item.href}
@@ -167,7 +141,7 @@ export default function Header() {
                             : "text-neutral-700 hover:bg-neutral-50"
                         }`}
                       >
-                        {navLabels[i]}
+                        {label}
                       </Link>
                     </motion.div>
                   );

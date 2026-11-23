@@ -3,15 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Container from "@/components/layout/Container";
+import homeJson from "@/content/home.json";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { useSiteData } from "@/components/providers/SiteDataProvider";
-
-const baseStats = [
-  { key: "students", defaultValue: 500, suffix: "+", labelKey: "students" as const },
-  { key: "programs", defaultValue: 20, suffix: "+", labelKey: "programs" as const },
-  { key: "partners", defaultValue: 10, suffix: "+", labelKey: "partners" as const },
-  { key: "years", defaultValue: 15, suffix: "", labelKey: "years" as const },
-];
 
 function useCountUp(target: number, duration = 1800) {
   const [count, setCount] = useState(0);
@@ -82,18 +76,15 @@ export default function StatsCounter() {
   const { getConfigText } = useSiteData();
   const sectionTitle = getConfigText("section_stats_title", locale, t.sections.stats);
 
-  const resolvedStats = baseStats.map((item) => {
+  const resolvedStats = homeJson.stats.map((item) => {
     const rawVal = Number(
       getConfigText(`stat_${item.key}_value`, locale, String(item.defaultValue))
     );
+    const labelKey = item.labelKey as keyof typeof t.stats;
     return {
       value: Number.isFinite(rawVal) && rawVal > 0 ? rawVal : item.defaultValue,
       suffix: item.suffix,
-      label: getConfigText(
-        `stat_${item.key}_label`,
-        locale,
-        t.stats[item.labelKey]
-      ),
+      label: getConfigText(`stat_${item.key}_label`, locale, t.stats[labelKey]),
     };
   });
 

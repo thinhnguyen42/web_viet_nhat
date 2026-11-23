@@ -7,6 +7,7 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import Button from "@/components/ui/Button";
+import pagesJson from "@/content/pages.json";
 import { siteConfig } from "@/data/site";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { useSiteData } from "@/components/providers/SiteDataProvider";
@@ -16,6 +17,8 @@ import { submitContact } from "@/lib/appsScriptApi";
 export default function ContactPage() {
   const { locale, t } = useLanguage();
   const { getConfigText } = useSiteData();
+  const contactContent = pagesJson.contact;
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -47,6 +50,13 @@ export default function ContactPage() {
     siteConfig.social.youtube
   );
 
+  const infoItems = [
+    { icon: MapPin, label: t.contact.address, value: address },
+    { icon: Phone, label: t.contact.phone, value: phone },
+    { icon: Mail, label: "Email", value: email },
+    { icon: Clock, label: t.contact.officeHours, value: officeHours },
+  ];
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -64,13 +74,13 @@ export default function ContactPage() {
     if (res.success) {
       setStatusMessage({
         type: "success",
-        text: "Tin nhắn của bạn đã được gửi thành công! Bộ phận hợp tác quốc tế sẽ phản hồi trong thời gian sớm nhất.",
+        text: contactContent.successMessage,
       });
       setForm({ name: "", email: "", subject: "", message: "" });
     } else {
       setStatusMessage({
         type: "error",
-        text: res.message || "Không thể gửi tin nhắn. Vui lòng thử lại sau.",
+        text: res.message || contactContent.errorFallback,
       });
     }
   };
@@ -80,7 +90,7 @@ export default function ContactPage() {
       <Container>
         <SectionHeading
           title={t.contact.title}
-          subtitle="Chúng tôi luôn sẵn sàng lắng nghe và giải đáp mọi câu hỏi của quý phụ huynh và học viên."
+          subtitle={contactContent.subtitle}
         />
 
         <div className="grid lg:grid-cols-12 gap-10">
@@ -111,7 +121,7 @@ export default function ContactPage() {
                     value={form.name}
                     onChange={handleChange}
                     required
-                    placeholder="Nguyễn Văn A"
+                    placeholder={contactContent.namePlaceholder}
                   />
                   <Input
                     label={t.contact.email}
@@ -120,7 +130,7 @@ export default function ContactPage() {
                     value={form.email}
                     onChange={handleChange}
                     required
-                    placeholder="name@example.com"
+                    placeholder={contactContent.emailPlaceholder}
                   />
                 </div>
                 <Input
@@ -129,7 +139,7 @@ export default function ContactPage() {
                   value={form.subject}
                   onChange={handleChange}
                   required
-                  placeholder="Cần tư vấn chương trình trao đổi du học Nhật Bản..."
+                  placeholder={contactContent.subjectPlaceholder}
                 />
                 <Textarea
                   label={t.contact.message}
@@ -138,7 +148,7 @@ export default function ContactPage() {
                   onChange={handleChange}
                   required
                   rows={5}
-                  placeholder="Nội dung chi tiết cần hỗ trợ..."
+                  placeholder={contactContent.messagePlaceholder}
                 />
                 <Button
                   type="submit"
@@ -146,7 +156,7 @@ export default function ContactPage() {
                   className="w-full mt-2"
                   disabled={submitted}
                 >
-                  {submitted ? "Đang gửi..." : t.contact.send}
+                  {submitted ? contactContent.submittingLabel : t.contact.send}
                 </Button>
               </form>
             </div>
@@ -159,28 +169,7 @@ export default function ContactPage() {
                 {t.contact.info}
               </h3>
               <div className="space-y-5 mb-8">
-                {[
-                  {
-                    icon: MapPin,
-                    label: t.contact.address,
-                    value: address,
-                  },
-                  {
-                    icon: Phone,
-                    label: t.contact.phone,
-                    value: phone,
-                  },
-                  {
-                    icon: Mail,
-                    label: "Email",
-                    value: email,
-                  },
-                  {
-                    icon: Clock,
-                    label: t.contact.officeHours,
-                    value: officeHours,
-                  },
-                ].map((item, i) => (
+                {infoItems.map((item, i) => (
                   <div key={i} className="flex gap-4">
                     <div className="w-11 h-11 rounded-2xl bg-primary-100/80 flex items-center justify-center shrink-0">
                       <item.icon className="w-5 h-5 text-primary-600" />
@@ -199,7 +188,7 @@ export default function ContactPage() {
 
               <div className="pt-6 border-t border-neutral-200/60 flex items-center gap-3">
                 <span className="text-xs text-neutral-500 font-medium">
-                  Kết nối với chúng tôi:
+                  {contactContent.socialLabel}
                 </span>
                 <div className="flex gap-2">
                   <a
@@ -227,14 +216,14 @@ export default function ContactPage() {
             {/* Map */}
             <div className="rounded-3xl overflow-hidden border border-neutral-200/80 aspect-[16/10] shadow-sm">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.4241673892787!2d106.6896238!3d10.7787884!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f3069c9b5a7%3A0x6b4fb83a1523415!2zOTcgVsO1IFbEg24gVOG6p24sIFBoxrDhu51uZyA2LCBRdeG6rW4gMywgSOG7kyBDaMOtIE1pbmggNzAwMDA!5e0!3m2!1svi!2s!4v1700000000000!5m2!1svi!2s"
+                src={siteConfig.mapEmbedUrl}
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="HCMCOU Map"
+                title={siteConfig.mapTitle}
               />
             </div>
           </div>

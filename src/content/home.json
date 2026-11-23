@@ -1,0 +1,94 @@
+{
+  "hero": {
+    "defaultBadge": {
+      "vi": "Đại học Mở TP.HCM",
+      "ja": "ホーチミン市オープン大学",
+      "en": "Ho Chi Minh City Open University"
+    },
+    "cardTag": "Vietnam - Japan Academic Exchange",
+    "cardTitle": {
+      "vi": "VIỆT NAM • NHẬT BẢN",
+      "ja": "ベトナム • 日本",
+      "en": "VIETNAM • JAPAN"
+    },
+    "cardSubtitle": {
+      "vi": "Hợp tác học thuật & Trao đổi sinh viên du học",
+      "ja": "学術協力・交換留学プログラム",
+      "en": "Academic Cooperation & Student Exchange"
+    },
+    "flags": ["🇻🇳", "🤝", "🇯🇵"],
+    "heroImage": "/images/website/hero-emblem.svg",
+    "statCount": "500+",
+    "statLabel": {
+      "vi": "Học viên mỗi năm",
+      "ja": "年間留学生数",
+      "en": "Students per year"
+    },
+    "pillars": [
+      {
+        "label": { "vi": "Đối tác", "ja": "提携校", "en": "Partners" },
+        "value": { "vi": "Top ĐH Nhật Bản", "ja": "日本トップ大学", "en": "Top Japan Univs" }
+      },
+      {
+        "label": { "vi": "Học bổng", "ja": "奨学金", "en": "Scholarships" },
+        "value": { "vi": "JASSO & MEXT", "ja": "JASSO・MEXT", "en": "JASSO & MEXT" }
+      },
+      {
+        "label": { "vi": "Cơ hội", "ja": "特典", "en": "Benefit" },
+        "value": { "vi": "Miễn phí 100%", "ja": "授業料免除", "en": "Tuition Waiver" }
+      }
+    ]
+  },
+  "features": [
+    {
+      "icon": "🇯🇵",
+      "image": "/images/website/feature-exchange.svg",
+      "title": "Trao đổi ĐH Nhật Bản",
+      "titleEn": "Japan University Exchange",
+      "titleJa": "日本の協定大学 交換留学",
+      "desc": "Học tập và nghiên cứu tại ĐH Tokyo, ĐH Kyoto, ĐH Osaka với chính sách công nhận tín chỉ.",
+      "descEn": "Study and research at The University of Tokyo, Kyoto, Osaka with full credit transfer.",
+      "descJa": "東京大学、京都大学、大阪大学など日本のトップ大学への学術交換留学制度。",
+      "href": "/programs",
+      "color": "from-blue-50/80 to-blue-100/50 border-blue-200/60 text-blue-950"
+    },
+    {
+      "icon": "🎓",
+      "image": "/images/website/feature-scholarship.svg",
+      "title": "Học bổng JASSO & MEXT",
+      "titleEn": "JASSO & MEXT Scholarships",
+      "titleJa": "JASSO・MEXT奨学金",
+      "desc": "Hỗ trợ xét tuyển các suất học bổng toàn phần, trợ cấp sinh hoạt phí lên tới 80.000 - 145.000 JPY/tháng.",
+      "descEn": "Full scholarship support with monthly stipends up to 80,000 - 145,000 JPY for eligible students.",
+      "descJa": "月額80,000円〜145,000円の生活支援奨学金および学費免除制度のご案内。",
+      "href": "/programs",
+      "color": "from-amber-50/80 to-amber-100/50 border-amber-200/60 text-amber-950"
+    },
+    {
+      "icon": "📚",
+      "image": "/images/website/feature-japanese.svg",
+      "title": "Tiếng Nhật học thuật",
+      "titleEn": "Academic Japanese",
+      "titleJa": "アカデミック日本語",
+      "desc": "Đào tạo kỹ năng nghiên cứu, viết báo cáo khoa học và phỏng vấn trực tiếp cùng giáo sư Nhật.",
+      "descEn": "Academic research training, scientific writing, and professor interview preparation.",
+      "descJa": "学術論文執筆、研究計画書作成、指導教員面談に向けた実践的指導。",
+      "href": "/programs",
+      "color": "from-pink-50/80 to-pink-100/50 border-pink-200/60 text-pink-950"
+    }
+  ],
+  "stats": [
+    { "key": "students", "defaultValue": 500, "suffix": "+", "labelKey": "students" },
+    { "key": "programs", "defaultValue": 20, "suffix": "+", "labelKey": "programs" },
+    { "key": "partners", "defaultValue": 10, "suffix": "+", "labelKey": "partners" },
+    { "key": "years", "defaultValue": 15, "suffix": "", "labelKey": "years" }
+  ],
+  "partners": [
+    { "name": "The University of Tokyo", "country": "🇯🇵 Tokyo, Nhật Bản", "countryJa": "🇯🇵 東京・日本", "countryEn": "🇯🇵 Tokyo, Japan" },
+    { "name": "Kyoto University", "country": "🇯🇵 Kyoto, Nhật Bản", "countryJa": "🇯🇵 京都・日本", "countryEn": "🇯🇵 Kyoto, Japan" },
+    { "name": "Osaka University", "country": "🇯🇵 Osaka, Nhật Bản", "countryJa": "🇯🇵 大阪・日本", "countryEn": "🇯🇵 Osaka, Japan" },
+    { "name": "Tohoku University", "country": "🇯🇵 Sendai, Nhật Bản", "countryJa": "🇯🇵 仙台・日本", "countryEn": "🇯🇵 Sendai, Japan" },
+    { "name": "Nagoya University", "country": "🇯🇵 Nagoya, Nhật Bản", "countryJa": "🇯🇵 名古屋・日本", "countryEn": "🇯🇵 Nagoya, Japan" },
+    { "name": "Waseda University", "country": "🇯🇵 Tokyo, Nhật Bản", "countryJa": "🇯🇵 東京・日本", "countryEn": "🇯🇵 Tokyo, Japan" }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "brand": {
+    "code": "VNJ",
+    "top": {
+      "vi": "Trung Tâm",
+      "ja": "センター",
+      "en": "Center"
+    },
+    "bottom": {
+      "vi": "Học Thuật Việt - Nhật",
+      "ja": "日越学術協力",
+      "en": "Vietnam - Japan Academic"
+    }
+  },
+  "siteConfig": {
+    "name": "Trung Tâm Hợp Tác Học Thuật Việt - Nhật",
+    "nameEn": "Vietnam - Japan Academic & Student Exchange Center",
+    "description": "Cổng thông tin học thuật, nghiên cứu và trao đổi học sinh - sinh viên Việt Nam sang Nhật Bản du học",
+    "descriptionEn": "Academic Cooperation, Research, and Student Exchange Center between Vietnam and Japan",
+    "url": "https://demoweb-vietnhat",
+    "ogImage": "/images/website/hero-emblem.svg",
+    "address": "97 Võ Văn Tần, Phường Võ Thị Sáu, Quận 3, TP.HCM",
+    "phone": "(028) 3930 0089",
+    "email": "vietnhat@ou.edu.vn",
+    "social": {
+      "facebook": "https://facebook.com/vietnhat.academic",
+      "zalo": "https://zalo.me/vietnhat",
+      "youtube": "https://youtube.com/@vietnhat-exchange"
+    },
+    "mapEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.4241673892787!2d106.6896238!3d10.7787884!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f3069c9b5a7%3A0x6b4fb83a1523415!2zOTcgVsO1IFbEg24gVOG6p24sIFBoxrDhu51uZyA2LCBRdeG6rW4gMywgSOG7kyBDaMOtIE1pbmggNzAwMDA!5e0!3m2!1svi!2s!4v1700000000000!5m2!1svi!2s",
+    "mapTitle": "HCMCOU Map"
+  },
+  "languages": [
+    { "code": "vi", "label": "🇻🇳 VI", "title": "Tiếng Việt" },
+    { "code": "ja", "label": "🇯🇵 日", "title": "日本語" },
+    { "code": "en", "label": "🇬🇧 EN", "title": "English" }
+  ],
+  "navItems": [
+    { "key": "home", "label": "Trang chủ", "labelEn": "Home", "href": "/" },
+    { "key": "about", "label": "Giới thiệu", "labelEn": "About", "href": "/about" },
+    { "key": "programs", "label": "Chương trình", "labelEn": "Programs", "href": "/programs" },
+    { "key": "news", "label": "Tin tức", "labelEn": "News", "href": "/news" },
+    { "key": "faculty", "label": "Đội ngũ", "labelEn": "Faculty", "href": "/faculty" },
+    { "key": "admissions", "label": "Tuyển sinh", "labelEn": "Admissions", "href": "/admissions" },
+    { "key": "contact", "label": "Liên hệ", "labelEn": "Contact", "href": "/contact" }
+  ],
+  "footerPrograms": [
+    {
+      "href": "/programs",
+      "vi": "🎓 Học bổng JASSO & MEXT",
+      "ja": "🎓 JASSO・MEXT奨学金",
+      "en": "🎓 JASSO & MEXT Scholarships"
+    },
+    {
+      "href": "/programs",
+      "vi": "🇯🇵 Trao đổi ĐH Tokyo & Kyoto",
+      "ja": "🇯🇵 東京大学・京都大学 交換留学",
+      "en": "🇯🇵 UTokyo & Kyoto Exchange"
+    },
+    {
+      "href": "/programs",
+      "vi": "📚 Tiếng Nhật học thuật N2/N1",
+      "ja": "📚 アカデミック日本語 N2/N1",
+      "en": "📚 Academic Japanese N2/N1"
+    }
+  ]
+}
